@@ -175,7 +175,7 @@ jobs:
           echo "✅ TypeScript compilation successful"
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-output
           path: |
@@ -255,8 +255,8 @@ jobs:
         run: |
           echo "Validating commit messages follow Conventional Commits..."
 
-          # Get commits in PR
-          COMMITS=$(git log --pretty=format:"%s" origin/${{ github.base_ref }}..HEAD)
+          # Get commits in PR, excluding merge commits
+          COMMITS=$(git log --pretty=format:"%s" --no-merges origin/${{ github.base_ref }}..HEAD)
 
           if [ -z "$COMMITS" ]; then
             echo "No commits to validate"
@@ -300,6 +300,21 @@ jobs:
     if: always()
 
     steps:
+      - name: Generate CI Summary
+        run: |
+          echo "## 🎴 Truco4AR CI Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint and Format Check | ${{ needs.lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Integration Tests | ${{ needs.integration-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scanning | ${{ needs.security.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Verification | ${{ needs.build.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Documentation Check | ${{ needs.documentation.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit Validation | ${{ needs.commit-validation.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
       - name: Check CI status
         run: |
           echo "========================"
@@ -317,6 +332,8 @@ jobs:
             echo "✅ All CI checks passed!"
             echo ""
             echo "Ready for code review and merge."
+            echo "---" >> $GITHUB_STEP_SUMMARY
+            echo "✅ **All CI checks passed! Ready for code review and merge.**" >> $GITHUB_STEP_SUMMARY
             exit 0
           else
             echo "❌ Some CI checks failed:"
@@ -329,5 +346,7 @@ jobs:
             echo "  Commit Validation: ${{ needs.commit-validation.result }}"
             echo ""
             echo "Please fix failing checks before merging."
+            echo "---" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Some CI checks failed. Please fix failing checks before merging.**" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
