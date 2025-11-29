@@ -480,53 +480,77 @@ These require session affinity or shared state store.
 - **Crash recovery**: Automatic reconnection with state recovery
 - **Error rate**: <0.1% action failures
 
-## Technology Stack (To Be Determined)
+## Technology Stack
 
-### Factors to Consider
+The project uses **TypeScript + Node.js + React** for the initial implementation, with a stack-agnostic architecture that allows for future experimentation with alternative technologies.
 
-**Client**:
-- Mobile-first (iOS, Android)
-- Progressive Web App capabilities
-- Offline support (Phase 2)
-- Camera access (QR scanning)
-- Microphone access (voice input)
+### Current Stack (v1.0)
 
-**Server**:
-- Real-time communication support
-- Horizontal scalability
-- Low latency
-- Stateful session management
+**Shared Game Logic**:
+- **Language**: TypeScript (strict mode)
+- **Package**: `@truco4ar/shared`
+- **Testing**: Jest
+- **Coverage**: 80% minimum (100% for critical paths)
+- **Key Feature**: Framework-agnostic, pure TypeScript with no external dependencies
 
-**Database**:
-- Fast read/write for game state
-- Optional: Persistence for history/stats
+**Backend** (in development):
+- **Runtime**: Node.js 18+
+- **Framework**: TBD (Express/Fastify/Hono)
+- **Real-time**: Socket.io or native WebSockets
+- **Database**: Redis (session state) + PostgreSQL (optional history)
+- **Testing**: Jest + Supertest
+
+**Frontend** (in development):
+- **Framework**: React 18+
+- **Build Tool**: Vite
+- **State Management**: TBD (Context API/Zustand/Redux)
+- **PWA**: Workbox for service workers
+- **Testing**: Jest + React Testing Library
 
 **Voice Recognition**:
-- Multi-language (Spanish, English)
-- Client-side or server-side processing
-- Privacy-focused
+- **Client-side**: Web Speech API (for privacy and low latency)
+- **Multi-language**: Spanish and English support
+- **Fallback**: Manual input always available
 
-### Example Stacks (Not Prescriptive)
+**Development Tools**:
+- **Monorepo**: npm workspaces
+- **Linting**: ESLint
+- **Formatting**: Prettier
+- **CI/CD**: GitHub Actions
+- **Deployment**: GCP (Cloud Run or App Engine)
 
-**Option 1: JavaScript/TypeScript**
-- Client: React/Vue + PWA
-- Server: Node.js + Socket.io
-- Database: Redis + PostgreSQL
-- Voice: Web Speech API / Cloud service
+### Stack-Agnostic Core
 
-**Option 2: Python**
-- Client: Progressive Web App
-- Server: FastAPI + WebSockets
-- Database: Redis + PostgreSQL
-- Voice: Whisper / Cloud service
+The `@truco4ar/shared` package contains all game logic and is intentionally kept framework-agnostic:
 
-**Option 3: Go**
-- Client: Progressive Web App
-- Server: Go + Gorilla WebSocket
-- Database: Redis + PostgreSQL
-- Voice: Cloud service
+**Design Principles**:
+- Pure TypeScript with no external dependencies
+- No Node.js-specific APIs
+- No browser-specific APIs
+- Deterministic (same inputs = same outputs)
+- 100% unit-testable
 
-The stack decision will be made based on team expertise and specific requirements.
+This allows the core game logic to be:
+- Reused across different backend implementations (Node.js, Rust, Go)
+- Reused across different frontend implementations (React, Leptos, Vue)
+- Tested independently of any framework
+- Compiled to different targets (browser, Node.js, WASM)
+
+### Future Stack Experimentation
+
+The architecture allows for future experiments:
+
+**Alternative Backends**:
+- Rust + Actix-web (for performance)
+- Go + Gorilla (for simplicity and concurrency)
+- Python + FastAPI (for ML/AI features)
+
+**Alternative Frontends**:
+- Leptos (Rust WASM frontend)
+- Vue 3 (different framework comparison)
+- Svelte (minimal bundle size)
+
+All alternatives would share the same `@truco4ar/shared` game logic.
 
 ## Testing Strategy
 

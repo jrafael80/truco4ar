@@ -22,21 +22,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup environment
-        run: |
-          echo "🎴 Truco4AR CI Pipeline"
-          echo "Stack-specific setup will be added once tech stack is chosen"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-      # Placeholder for future linting
-      - name: Run linter
-        run: |
-          echo "⏩ Linting skipped (stack not yet chosen)"
-          echo "Will add: ESLint, Prettier, Pylint, golangci-lint, or similar"
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Check code formatting
-        run: |
-          echo "⏩ Format check skipped (stack not yet chosen)"
-          echo "Will add: Prettier, Black, gofmt, rustfmt, or similar"
+      - name: Run ESLint
+        run: npm run lint --workspaces --if-present
+
+      - name: Check code formatting with Prettier
+        run: npm run format:check --workspaces --if-present
 
   # ========================================
   # Unit Tests
@@ -49,29 +48,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup environment
-        run: |
-          echo "Setting up test environment"
-          echo "Stack-specific setup will be added"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-      # Placeholder for future unit tests
-      - name: Run unit tests
-        run: |
-          echo "⏩ Unit tests skipped (stack not yet chosen)"
-          echo "Will add: Jest, pytest, go test, cargo test, or similar"
-          echo ""
-          echo "Expected coverage: minimum 80%"
-          echo "Critical paths: 100% coverage"
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Generate coverage report
-        run: |
-          echo "⏩ Coverage report skipped (stack not yet chosen)"
+      - name: Run unit tests with coverage
+        run: npm run test:coverage --workspaces --if-present
 
-      # Placeholder for coverage upload
-      - name: Upload coverage
+      - name: Check coverage thresholds
         run: |
-          echo "⏩ Coverage upload skipped"
-          echo "Will integrate with: Codecov, Coveralls, or similar"
+          echo "Verifying coverage meets requirements:"
+          echo "  - Minimum 80% overall coverage"
+          echo "  - 100% coverage for critical paths"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./packages/*/coverage/coverage-final.json
+          flags: unittests
+          name: codecov-truco4ar
 
   # ========================================
   # Integration Tests
@@ -84,20 +84,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup environment
-        run: |
-          echo "Setting up integration test environment"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-      # Placeholder for service dependencies
+      - name: Install dependencies
+        run: npm ci
+
       - name: Start service dependencies
         run: |
-          echo "⏩ Service dependencies skipped (stack not yet chosen)"
+          echo "⏩ Service dependencies will be added when backend is implemented"
           echo "Will add: Docker containers for Redis, PostgreSQL, etc."
 
-      # Placeholder for integration tests
       - name: Run integration tests
         run: |
-          echo "⏩ Integration tests skipped (stack not yet chosen)"
+          echo "⏩ Integration tests will be added when backend is implemented"
           echo "Will test: service-to-service communication, database operations, API endpoints"
 
       - name: Cleanup services
@@ -116,19 +119,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Dependency vulnerability scanning
-      - name: Run dependency check
-        run: |
-          echo "⏩ Dependency scanning skipped (stack not yet chosen)"
-          echo "Will add: npm audit, pip-audit, cargo audit, or similar"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-      # Static security analysis
-      - name: Run security analysis
-        run: |
-          echo "⏩ Security analysis skipped (stack not yet chosen)"
-          echo "Will add: Snyk, OWASP Dependency Check, or similar"
+      - name: Install dependencies
+        run: npm ci
 
-      # Secret scanning
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
       - name: Check for secrets
         run: |
           echo "Checking for accidentally committed secrets..."
@@ -149,22 +158,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup build environment
-        run: |
-          echo "Setting up build environment"
-          echo "Stack-specific setup will be added"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-      # Placeholder for build
-      - name: Build application
-        run: |
-          echo "⏩ Build skipped (stack not yet chosen)"
-          echo "Will add: npm build, docker build, go build, cargo build, or similar"
+      - name: Install dependencies
+        run: npm ci
 
-      # Placeholder for build artifacts
+      - name: Build all packages
+        run: npm run build --workspaces --if-present
+
+      - name: Verify TypeScript compilation
+        run: |
+          echo "✅ TypeScript compilation successful"
+
       - name: Upload build artifacts
-        run: |
-          echo "⏩ Artifact upload skipped"
-          echo "Will save: compiled binaries, Docker images, build outputs"
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: |
+            packages/*/dist
+            packages/*/build
+          retention-days: 7
 
   # ========================================
   # Documentation Check

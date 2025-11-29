@@ -1,0 +1,38 @@
+{
+  "name": "truco4ar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Multi-device web application for playing Argentine Truco",
+  "author": "Jorge Rafael",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:coverage": "npm run test:coverage --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "npm run format --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
+    "dev:backend": "npm run dev -w @truco4ar/backend",
+    "dev:frontend": "npm run dev -w @truco4ar/frontend",
+    "dev:shared": "npm run dev -w @truco4ar/shared"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jrafael80/truco4ar.git"
+  },
+  "keywords": [
+    "truco",
+    "card-game",
+    "multiplayer",
+    "websocket",
+    "pwa"
+  ]
+}

@@ -27,11 +27,44 @@ Truco4AR brings the traditional Argentine card game Truco into the digital age. 
 
 ## Quick Start
 
-> Note: Development setup instructions will be added once the technology stack is selected.
+### Prerequisites
+
+- Node.js 18+ and npm 9+
+- Git
+
+### Installation
+
+```bash
+# Clone the repository
+git clone git@github.com:jrafael80/truco4ar.git
+cd truco4ar
+
+# Install dependencies for all packages
+npm install
+
+# Run tests
+npm test
+
+# Build all packages
+npm run build
+```
+
+### Running in Development
+
+```bash
+# Run all packages in watch mode
+npm run dev
+
+# Run specific package
+npm run dev:backend   # Backend only
+npm run dev:frontend  # Frontend only
+```
 
 ## Development
 
-This project follows a stack-agnostic approach, allowing for technology stack changes without affecting core functionality. See [Architecture](docs/ARCHITECTURE.md) for design principles.
+This project uses **TypeScript + Node.js + React** for the initial implementation, with a stack-agnostic architecture that allows for future experimentation with alternative technologies. The core game logic is separated in the `@truco4ar/shared` package, making it reusable across different implementations.
+
+See [Architecture](docs/ARCHITECTURE.md) for design principles.
 
 ### Development Standards
 
@@ -113,11 +146,23 @@ truco4ar/
 │   ├── TRUCO_RULES.md        # Game rules
 │   ├── USER_FLOWS.md         # User experience flows
 │   └── TESTING_STRATEGY.md   # Testing guidelines
+├── packages/                  # Monorepo packages (npm workspaces)
+│   ├── shared/               # Core game logic (TypeScript)
+│   │   ├── src/
+│   │   │   ├── types/       # Card, Player, Game types
+│   │   │   └── game/        # Card hierarchy, game rules
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── backend/              # Backend implementation (coming soon)
+│   └── frontend/             # Frontend implementation (coming soon)
 ├── .editorconfig             # Editor configuration
 ├── .gitignore               # Git ignore patterns
+├── .npmrc                   # npm configuration
 ├── CONTRIBUTING.md          # Development guidelines
 ├── LICENSE                  # MIT License
-└── README.md               # This file
+├── package.json            # Root package.json (workspaces)
+├── tsconfig.json           # Base TypeScript config
+└── README.md              # This file
 ```
 
 ### CI/CD Pipeline
@@ -139,18 +184,43 @@ See [`.github/workflows/`](.github/workflows/) for pipeline details.
 
 ### Testing
 
-This project requires comprehensive testing:
+This project requires comprehensive testing using **Jest**:
 - **Unit Tests**: 80% minimum coverage (100% for critical paths)
 - **Integration Tests**: Required for service integrations
 - **E2E Tests**: Future scope (not initial release)
 
-Run tests: (commands will be added with stack choice)
+Run tests:
 ```bash
-npm test              # or equivalent
-npm run test:coverage # with coverage report
+# Run all tests across packages
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+
+# Run tests for specific package
+npm test -w @truco4ar/shared
 ```
 
 See [TESTING_STRATEGY.md](docs/TESTING_STRATEGY.md) for detailed testing guidelines.
+
+### Current Implementation Status
+
+✅ **Completed**:
+- Monorepo structure with npm workspaces
+- Core game logic package (`@truco4ar/shared`)
+- Card hierarchy implementation with 100% test coverage
+- TypeScript configuration with strict mode
+- Jest testing framework
+- ESLint and Prettier configuration
+
+🚧 **In Progress**:
+- Backend implementation (Node.js)
+- Frontend implementation (React)
+- Real-time synchronization
+- Voice scoring feature
 
 ## License
 
