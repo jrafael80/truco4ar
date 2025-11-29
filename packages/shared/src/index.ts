@@ -10,3 +10,4 @@ export * from './types/card';
 
 // Game Logic
 export * from './game/card-hierarchy';
+export * from './game/deck';
