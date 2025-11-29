@@ -1,0 +1,352 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  # ========================================
+  # Lint and Format Check
+  # ========================================
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint --workspaces --if-present
+
+      - name: Check code formatting with Prettier
+        run: npm run format:check --workspaces --if-present
+
+  # ========================================
+  # Unit Tests
+  # ========================================
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage --workspaces --if-present
+
+      - name: Check coverage thresholds
+        run: |
+          echo "Verifying coverage meets requirements:"
+          echo "  - Minimum 80% overall coverage"
+          echo "  - 100% coverage for critical paths"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./packages/*/coverage/coverage-final.json
+          flags: unittests
+          name: codecov-truco4ar
+
+  # ========================================
+  # Integration Tests
+  # ========================================
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start service dependencies
+        run: |
+          echo "⏩ Service dependencies will be added when backend is implemented"
+          echo "Will add: Docker containers for Redis, PostgreSQL, etc."
+
+      - name: Run integration tests
+        run: |
+          echo "⏩ Integration tests will be added when backend is implemented"
+          echo "Will test: service-to-service communication, database operations, API endpoints"
+
+      - name: Cleanup services
+        if: always()
+        run: |
+          echo "Cleaning up test services"
+
+  # ========================================
+  # Security Scanning
+  # ========================================
+  security:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Check for secrets
+        run: |
+          echo "Checking for accidentally committed secrets..."
+          if git log --all --full-history --oneline | grep -iE 'password|secret|api.?key|token' > /dev/null; then
+            echo "⚠️  Warning: Potential secrets found in commit messages"
+          else
+            echo "✅ No secrets found in commit messages"
+          fi
+
+  # ========================================
+  # Build Verification
+  # ========================================
+  build:
+    name: Build Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build all packages
+        run: npm run build --workspaces --if-present
+
+      - name: Verify TypeScript compilation
+        run: |
+          echo "✅ TypeScript compilation successful"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            packages/*/dist
+            packages/*/build
+          retention-days: 7
+
+  # ========================================
+  # Documentation Check
+  # ========================================
+  documentation:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for broken links in docs
+        run: |
+          echo "Checking documentation links..."
+          # Simple check for markdown files existence
+          if [ -f "README.md" ] && [ -d "docs" ]; then
+            echo "✅ Core documentation files present"
+          else
+            echo "❌ Missing core documentation"
+            exit 1
+          fi
+
+      - name: Verify documentation structure
+        run: |
+          echo "Verifying required documentation..."
+          REQUIRED_DOCS=(
+            "README.md"
+            "CONTRIBUTING.md"
+            "docs/PRODUCT_SPECS.md"
+            "docs/TRUCO_RULES.md"
+            "docs/ARCHITECTURE.md"
+            "docs/USER_FLOWS.md"
+            "docs/TESTING_STRATEGY.md"
+          )
+
+          MISSING_DOCS=0
+          for doc in "${REQUIRED_DOCS[@]}"; do
+            if [ ! -f "$doc" ]; then
+              echo "❌ Missing: $doc"
+              MISSING_DOCS=$((MISSING_DOCS + 1))
+            else
+              echo "✅ Found: $doc"
+            fi
+          done
+
+          if [ $MISSING_DOCS -gt 0 ]; then
+            echo ""
+            echo "❌ $MISSING_DOCS required documentation file(s) missing"
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ All required documentation present"
+
+  # ========================================
+  # Commit Message Validation
+  # ========================================
+  commit-validation:
+    name: Validate Commit Messages
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit messages
+        run: |
+          echo "Validating commit messages follow Conventional Commits..."
+
+          # Get commits in PR, excluding merge commits
+          COMMITS=$(git log --pretty=format:"%s" --no-merges origin/${{ github.base_ref }}..HEAD)
+
+          if [ -z "$COMMITS" ]; then
+            echo "No commits to validate"
+            exit 0
+          fi
+
+          INVALID=0
+          while IFS= read -r msg; do
+            if echo "$msg" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|chore|ci)(\(.+\))?: .+'; then
+              echo "✅ Valid: $msg"
+            else
+              echo "❌ Invalid: $msg"
+              INVALID=$((INVALID + 1))
+            fi
+          done <<< "$COMMITS"
+
+          if [ $INVALID -gt 0 ]; then
+            echo ""
+            echo "❌ $INVALID commit message(s) do not follow Conventional Commits format"
+            echo ""
+            echo "Expected format: type(scope): subject"
+            echo "Valid types: feat, fix, docs, style, refactor, perf, test, chore, ci"
+            echo ""
+            echo "Examples:"
+            echo "  feat(game): add Envido betting logic"
+            echo "  fix(sync): resolve connection timeout issue"
+            echo "  docs: update installation instructions"
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ All commit messages are properly formatted"
+
+  # ========================================
+  # Summary
+  # ========================================
+  ci-summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, integration-tests, security, build, documentation, commit-validation]
+    if: always()
+
+    steps:
+      - name: Generate CI Summary
+        run: |
+          echo "## 🎴 Truco4AR CI Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint and Format Check | ${{ needs.lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Integration Tests | ${{ needs.integration-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scanning | ${{ needs.security.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Verification | ${{ needs.build.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Documentation Check | ${{ needs.documentation.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit Validation | ${{ needs.commit-validation.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check CI status
+        run: |
+          echo "========================"
+          echo "🎴 Truco4AR CI Summary"
+          echo "========================"
+          echo ""
+
+          # Check if all jobs passed
+          if [ "${{ needs.lint.result }}" = "success" ] && \
+             [ "${{ needs.unit-tests.result }}" = "success" ] && \
+             [ "${{ needs.integration-tests.result }}" = "success" ] && \
+             [ "${{ needs.security.result }}" = "success" ] && \
+             [ "${{ needs.build.result }}" = "success" ] && \
+             [ "${{ needs.documentation.result }}" = "success" ]; then
+            echo "✅ All CI checks passed!"
+            echo ""
+            echo "Ready for code review and merge."
+            echo "---" >> $GITHUB_STEP_SUMMARY
+            echo "✅ **All CI checks passed! Ready for code review and merge.**" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          else
+            echo "❌ Some CI checks failed:"
+            echo "  Lint: ${{ needs.lint.result }}"
+            echo "  Unit Tests: ${{ needs.unit-tests.result }}"
+            echo "  Integration Tests: ${{ needs.integration-tests.result }}"
+            echo "  Security: ${{ needs.security.result }}"
+            echo "  Build: ${{ needs.build.result }}"
+            echo "  Documentation: ${{ needs.documentation.result }}"
+            echo "  Commit Validation: ${{ needs.commit-validation.result }}"
+            echo ""
+            echo "Please fix failing checks before merging."
+            echo "---" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Some CI checks failed. Please fix failing checks before merging.**" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi

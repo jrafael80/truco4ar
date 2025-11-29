@@ -1,0 +1,342 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+  # Manual workflow dispatch for emergency deployments
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual deployment'
+        required: true
+        type: string
+
+jobs:
+  # ========================================
+  # Pre-Deployment Checks
+  # ========================================
+  pre-deployment-checks:
+    name: Pre-Deployment Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate deployment
+        run: |
+          echo "🎴 Truco4AR - Production Deployment"
+          echo "===================================="
+          echo ""
+          echo "⚠️  Production deployment - Exercise caution"
+          echo ""
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual deployment triggered"
+            echo "Reason: ${{ github.event.inputs.reason }}"
+          fi
+
+      - name: Verify all tests passed
+        run: |
+          echo "⏩ Test verification skipped (will be automated)"
+          echo ""
+          echo "Will verify:"
+          echo "  - All CI tests passed on this commit"
+          echo "  - No failing checks"
+          echo "  - Code review approved"
+
+      - name: Check for breaking changes
+        run: |
+          echo "⏩ Breaking change check skipped"
+          echo ""
+          echo "Will check:"
+          echo "  - BREAKING CHANGE in commit messages"
+          echo "  - API version compatibility"
+          echo "  - Database migration safety"
+
+  # ========================================
+  # Build Production Release
+  # ========================================
+  build-production:
+    name: Build Production Release
+    runs-on: ubuntu-latest
+    needs: [pre-deployment-checks]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup build environment
+        run: |
+          echo "Setting up production build environment"
+
+      # Placeholder for production build
+      - name: Build production bundle
+        run: |
+          echo "⏩ Production build skipped (stack not yet chosen)"
+          echo ""
+          echo "Will add:"
+          echo "  - Build with production optimizations"
+          echo "  - Minification and bundling"
+          echo "  - Build Docker image"
+          echo "  - Tag with version and 'latest'"
+
+      # Placeholder for security scanning
+      - name: Scan for vulnerabilities
+        run: |
+          echo "⏩ Security scan skipped"
+          echo ""
+          echo "Will add:"
+          echo "  - Container image scanning"
+          echo "  - Dependency vulnerability check"
+          echo "  - OWASP security analysis"
+
+      # Placeholder for container push
+      - name: Push to Container Registry
+        run: |
+          echo "⏩ Container push skipped"
+          echo ""
+          echo "Will tag and push:"
+          echo "  - gcr.io/project/truco4ar:latest"
+          echo "  - gcr.io/project/truco4ar:v\$VERSION"
+          echo "  - gcr.io/project/truco4ar:\${{ github.sha }}"
+
+  # ========================================
+  # Deploy to Production
+  # ========================================
+  deploy-production:
+    name: Deploy to GCP Production
+    runs-on: ubuntu-latest
+    needs: [build-production]
+    environment:
+      name: production
+      url: https://truco4ar.example.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup deployment
+        run: |
+          echo "Preparing production deployment"
+          echo "Commit: ${{ github.sha }}"
+          echo "Actor: ${{ github.actor }}"
+
+      # Placeholder for GCP authentication
+      - name: Authenticate to Google Cloud
+        run: |
+          echo "⏩ GCP authentication skipped"
+          echo ""
+          echo "Will authenticate with production service account"
+
+      # Placeholder for backup
+      - name: Create pre-deployment backup
+        run: |
+          echo "⏩ Backup skipped (infrastructure not configured)"
+          echo ""
+          echo "Will create:"
+          echo "  - Database snapshot"
+          echo "  - Configuration backup"
+          echo "  - Previous version image backup"
+
+      # Placeholder for database migrations
+      - name: Run database migrations
+        run: |
+          echo "⏩ Database migrations skipped"
+          echo ""
+          echo "Will run:"
+          echo "  - Production-safe migrations"
+          echo "  - Verify data integrity"
+          echo "  - Prepare rollback if needed"
+
+      # Placeholder for blue-green deployment
+      - name: Deploy to production
+        run: |
+          echo "⏩ Deployment skipped (infrastructure not configured)"
+          echo ""
+          echo "Deployment strategy: Blue-Green"
+          echo ""
+          echo "Steps:"
+          echo "  1. Deploy to 'green' environment"
+          echo "  2. Run smoke tests on green"
+          echo "  3. Gradually shift traffic blue → green"
+          echo "  4. Monitor metrics during rollout"
+          echo "  5. Complete or rollback based on health"
+
+      # Placeholder for smoke tests
+      - name: Run production smoke tests
+        run: |
+          echo "⏩ Smoke tests skipped"
+          echo ""
+          echo "Critical smoke tests:"
+          echo "  ✓ Health check returns 200"
+          echo "  ✓ Can create game session"
+          echo "  ✓ WebSocket connects successfully"
+          echo "  ✓ Database queries work"
+          echo "  ✓ Voice recognition endpoint responds"
+          echo "  ✓ QR code generation works"
+
+      # Placeholder for monitoring
+      - name: Enable monitoring and alerts
+        run: |
+          echo "⏩ Monitoring setup skipped"
+          echo ""
+          echo "Will configure:"
+          echo "  - Error rate alerts"
+          echo "  - Latency monitoring"
+          echo "  - Resource usage alerts"
+          echo "  - Uptime monitoring"
+
+      # Deployment summary
+      - name: Deployment summary
+        run: |
+          echo ""
+          echo "===================================="
+          echo "📝 Production Deployment Summary"
+          echo "===================================="
+          echo ""
+          echo "✅ Deployment placeholder completed"
+          echo ""
+          echo "Commit: ${{ github.sha }}"
+          echo "Deployed by: ${{ github.actor }}"
+          echo "Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          echo ""
+          echo "⏩ This is a placeholder workflow"
+          echo "   Real deployment will be configured"
+          echo "   once infrastructure is set up"
+
+  # ========================================
+  # Post-Deployment Verification
+  # ========================================
+  post-deployment:
+    name: Post-Deployment Verification
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+
+    steps:
+      - name: Verify deployment health
+        run: |
+          echo "⏩ Health verification skipped"
+          echo ""
+          echo "Will verify:"
+          echo "  - All services responding"
+          echo "  - No error spikes"
+          echo "  - Response times normal"
+          echo "  - Database connections healthy"
+
+      - name: Run end-to-end tests
+        run: |
+          echo "⏩ E2E tests skipped (not in initial scope)"
+          echo ""
+          echo "Future E2E tests:"
+          echo "  - Complete game flow"
+          echo "  - Multi-device synchronization"
+          echo "  - Voice scoring"
+          echo "  - QR code joining"
+
+      - name: Monitor for 15 minutes
+        run: |
+          echo "⏩ Post-deployment monitoring skipped"
+          echo ""
+          echo "Will monitor:"
+          echo "  - Error rates"
+          echo "  - Response times"
+          echo "  - Active connections"
+          echo "  - Resource usage"
+          echo "  - Alert for anomalies"
+
+  # ========================================
+  # Rollback on Failure
+  # ========================================
+  rollback:
+    name: Rollback on Failure
+    runs-on: ubuntu-latest
+    needs: [deploy-production, post-deployment]
+    if: failure()
+
+    steps:
+      - name: Trigger rollback
+        run: |
+          echo "❌ Deployment or verification failed"
+          echo ""
+          echo "⏩ Automatic rollback skipped (not configured)"
+          echo ""
+          echo "Rollback steps:"
+          echo "  1. Switch traffic back to blue (previous version)"
+          echo "  2. Revert database migrations if needed"
+          echo "  3. Restore from backup if necessary"
+          echo "  4. Notify team of rollback"
+          echo "  5. Investigate failure"
+
+      - name: Notify team of failure
+        run: |
+          echo "⏩ Failure notification skipped"
+          echo ""
+          echo "Will notify via:"
+          echo "  - Slack/Discord alert"
+          echo "  - Email to on-call"
+          echo "  - GitHub issue creation"
+
+  # ========================================
+  # Notify on Deployment Success
+  # ========================================
+  notify-success:
+    name: Notify Deployment Success
+    runs-on: ubuntu-latest
+    needs: [post-deployment]
+    if: success()
+
+    steps:
+      - name: Notify team
+        run: |
+          echo "✅ Production deployment successful!"
+          echo ""
+          echo "⏩ Success notification skipped"
+          echo ""
+          echo "Will notify:"
+          echo "  - Post to team Slack/Discord"
+          echo "  - Update status page"
+          echo "  - Log deployment to tracking system"
+          echo ""
+          echo "Message template:"
+          echo "  '🎴 Truco4AR deployed to production'"
+          echo "  'Version: \$VERSION'"
+          echo "  'Commit: ${{ github.sha }}'"
+          echo "  'Deployed by: ${{ github.actor }}'"
+
+  # ========================================
+  # Create GitHub Release
+  # ========================================
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [post-deployment]
+    if: success()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate release notes
+        run: |
+          echo "⏩ Release notes generation skipped"
+          echo ""
+          echo "Will generate:"
+          echo "  - Changelog from commits since last release"
+          echo "  - List of features added"
+          echo "  - List of bugs fixed"
+          echo "  - Breaking changes highlighted"
+
+      - name: Create GitHub release
+        run: |
+          echo "⏩ GitHub release creation skipped"
+          echo ""
+          echo "Will create release with:"
+          echo "  - Version tag (semantic versioning)"
+          echo "  - Release notes"
+          echo "  - Build artifacts (if applicable)"
+          echo "  - Deploy timestamp"
