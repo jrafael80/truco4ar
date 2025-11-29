@@ -1,0 +1,159 @@
+name: Deploy to Development
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  # ========================================
+  # Build and Deploy to Dev Environment
+  # ========================================
+  deploy-dev:
+    name: Deploy to GCP Development
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+      url: https://dev.truco4ar.example.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup deployment environment
+        run: |
+          echo "🎴 Truco4AR - Development Deployment"
+          echo "===================================="
+          echo ""
+          echo "Target: GCP Development Environment"
+          echo "Branch: develop"
+
+      # Placeholder for build step
+      - name: Build application
+        run: |
+          echo "⏩ Build step skipped (stack not yet chosen)"
+          echo ""
+          echo "Will add:"
+          echo "  - Build optimized production bundle"
+          echo "  - Build Docker image"
+          echo "  - Tag with commit SHA and 'dev' tag"
+
+      # Placeholder for GCP authentication
+      - name: Authenticate to Google Cloud
+        run: |
+          echo "⏩ GCP authentication skipped (credentials not configured)"
+          echo ""
+          echo "Required setup:"
+          echo "  1. Create GCP service account"
+          echo "  2. Grant necessary permissions"
+          echo "  3. Add service account key to GitHub secrets"
+          echo "  4. Use: google-github-actions/auth@v1"
+
+      # Placeholder for container push
+      - name: Push to Container Registry
+        run: |
+          echo "⏩ Container push skipped (stack not yet chosen)"
+          echo ""
+          echo "Will add:"
+          echo "  - Tag image: gcr.io/project/truco4ar:dev"
+          echo "  - Tag image: gcr.io/project/truco4ar:\${{ github.sha }}"
+          echo "  - Push to Google Container Registry"
+
+      # Placeholder for deployment
+      - name: Deploy to Cloud Run / GKE
+        run: |
+          echo "⏩ Deployment skipped (infrastructure not configured)"
+          echo ""
+          echo "Deployment options:"
+          echo "  Option 1: Cloud Run (serverless, easier setup)"
+          echo "    - Deploy container to Cloud Run"
+          echo "    - Auto-scaling based on traffic"
+          echo "    - Pay per use"
+          echo ""
+          echo "  Option 2: GKE (Kubernetes, more control)"
+          echo "    - Deploy to Kubernetes cluster"
+          echo "    - Update deployment with new image"
+          echo "    - Rolling update strategy"
+
+      # Placeholder for database migrations
+      - name: Run database migrations
+        run: |
+          echo "⏩ Database migrations skipped (stack not yet chosen)"
+          echo ""
+          echo "Will add:"
+          echo "  - Run migration scripts"
+          echo "  - Verify migration success"
+          echo "  - Rollback on failure"
+
+      # Placeholder for smoke tests
+      - name: Run smoke tests
+        run: |
+          echo "⏩ Smoke tests skipped (stack not yet chosen)"
+          echo ""
+          echo "Smoke tests to add:"
+          echo "  - Health check endpoint returns 200"
+          echo "  - Can create game session"
+          echo "  - WebSocket connection works"
+          echo "  - Database connectivity"
+
+      # Placeholder for deployment verification
+      - name: Verify deployment
+        run: |
+          echo "⏩ Deployment verification skipped"
+          echo ""
+          echo "Verification steps:"
+          echo "  - Check service is running"
+          echo "  - Verify correct image version deployed"
+          echo "  - Check logs for errors"
+          echo "  - Monitor metrics"
+
+      # Summary
+      - name: Deployment summary
+        if: always()
+        run: |
+          echo ""
+          echo "===================================="
+          echo "📝 Deployment Summary"
+          echo "===================================="
+          echo ""
+          echo "Environment: Development"
+          echo "Branch: develop"
+          echo "Commit: ${{ github.sha }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo ""
+          echo "⏩ This is a placeholder workflow"
+          echo "   Actual deployment will be configured"
+          echo "   once tech stack and GCP setup are complete"
+          echo ""
+          echo "Next steps:"
+          echo "  1. Choose tech stack"
+          echo "  2. Set up GCP project"
+          echo "  3. Configure service account"
+          echo "  4. Add deployment secrets to GitHub"
+          echo "  5. Update this workflow with real steps"
+
+  # ========================================
+  # Notify on Deployment
+  # ========================================
+  notify:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [deploy-dev]
+    if: always()
+
+    steps:
+      - name: Notify team
+        run: |
+          echo "⏩ Notifications skipped (not configured)"
+          echo ""
+          echo "Notification options:"
+          echo "  - Slack webhook"
+          echo "  - Discord webhook"
+          echo "  - Email"
+          echo "  - GitHub Discussions"
+          echo ""
+          if [ "${{ needs.deploy-dev.result }}" = "success" ]; then
+            echo "✅ Development deployment successful"
+          else
+            echo "❌ Development deployment failed"
+          fi

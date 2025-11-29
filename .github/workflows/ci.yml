@@ -1,0 +1,316 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  # ========================================
+  # Lint and Format Check
+  # ========================================
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        run: |
+          echo "🎴 Truco4AR CI Pipeline"
+          echo "Stack-specific setup will be added once tech stack is chosen"
+
+      # Placeholder for future linting
+      - name: Run linter
+        run: |
+          echo "⏩ Linting skipped (stack not yet chosen)"
+          echo "Will add: ESLint, Prettier, Pylint, golangci-lint, or similar"
+
+      - name: Check code formatting
+        run: |
+          echo "⏩ Format check skipped (stack not yet chosen)"
+          echo "Will add: Prettier, Black, gofmt, rustfmt, or similar"
+
+  # ========================================
+  # Unit Tests
+  # ========================================
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        run: |
+          echo "Setting up test environment"
+          echo "Stack-specific setup will be added"
+
+      # Placeholder for future unit tests
+      - name: Run unit tests
+        run: |
+          echo "⏩ Unit tests skipped (stack not yet chosen)"
+          echo "Will add: Jest, pytest, go test, cargo test, or similar"
+          echo ""
+          echo "Expected coverage: minimum 80%"
+          echo "Critical paths: 100% coverage"
+
+      - name: Generate coverage report
+        run: |
+          echo "⏩ Coverage report skipped (stack not yet chosen)"
+
+      # Placeholder for coverage upload
+      - name: Upload coverage
+        run: |
+          echo "⏩ Coverage upload skipped"
+          echo "Will integrate with: Codecov, Coveralls, or similar"
+
+  # ========================================
+  # Integration Tests
+  # ========================================
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        run: |
+          echo "Setting up integration test environment"
+
+      # Placeholder for service dependencies
+      - name: Start service dependencies
+        run: |
+          echo "⏩ Service dependencies skipped (stack not yet chosen)"
+          echo "Will add: Docker containers for Redis, PostgreSQL, etc."
+
+      # Placeholder for integration tests
+      - name: Run integration tests
+        run: |
+          echo "⏩ Integration tests skipped (stack not yet chosen)"
+          echo "Will test: service-to-service communication, database operations, API endpoints"
+
+      - name: Cleanup services
+        if: always()
+        run: |
+          echo "Cleaning up test services"
+
+  # ========================================
+  # Security Scanning
+  # ========================================
+  security:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Dependency vulnerability scanning
+      - name: Run dependency check
+        run: |
+          echo "⏩ Dependency scanning skipped (stack not yet chosen)"
+          echo "Will add: npm audit, pip-audit, cargo audit, or similar"
+
+      # Static security analysis
+      - name: Run security analysis
+        run: |
+          echo "⏩ Security analysis skipped (stack not yet chosen)"
+          echo "Will add: Snyk, OWASP Dependency Check, or similar"
+
+      # Secret scanning
+      - name: Check for secrets
+        run: |
+          echo "Checking for accidentally committed secrets..."
+          if git log --all --full-history --oneline | grep -iE 'password|secret|api.?key|token' > /dev/null; then
+            echo "⚠️  Warning: Potential secrets found in commit messages"
+          else
+            echo "✅ No secrets found in commit messages"
+          fi
+
+  # ========================================
+  # Build Verification
+  # ========================================
+  build:
+    name: Build Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup build environment
+        run: |
+          echo "Setting up build environment"
+          echo "Stack-specific setup will be added"
+
+      # Placeholder for build
+      - name: Build application
+        run: |
+          echo "⏩ Build skipped (stack not yet chosen)"
+          echo "Will add: npm build, docker build, go build, cargo build, or similar"
+
+      # Placeholder for build artifacts
+      - name: Upload build artifacts
+        run: |
+          echo "⏩ Artifact upload skipped"
+          echo "Will save: compiled binaries, Docker images, build outputs"
+
+  # ========================================
+  # Documentation Check
+  # ========================================
+  documentation:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for broken links in docs
+        run: |
+          echo "Checking documentation links..."
+          # Simple check for markdown files existence
+          if [ -f "README.md" ] && [ -d "docs" ]; then
+            echo "✅ Core documentation files present"
+          else
+            echo "❌ Missing core documentation"
+            exit 1
+          fi
+
+      - name: Verify documentation structure
+        run: |
+          echo "Verifying required documentation..."
+          REQUIRED_DOCS=(
+            "README.md"
+            "CONTRIBUTING.md"
+            "docs/PRODUCT_SPECS.md"
+            "docs/TRUCO_RULES.md"
+            "docs/ARCHITECTURE.md"
+            "docs/USER_FLOWS.md"
+            "docs/TESTING_STRATEGY.md"
+          )
+
+          MISSING_DOCS=0
+          for doc in "${REQUIRED_DOCS[@]}"; do
+            if [ ! -f "$doc" ]; then
+              echo "❌ Missing: $doc"
+              MISSING_DOCS=$((MISSING_DOCS + 1))
+            else
+              echo "✅ Found: $doc"
+            fi
+          done
+
+          if [ $MISSING_DOCS -gt 0 ]; then
+            echo ""
+            echo "❌ $MISSING_DOCS required documentation file(s) missing"
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ All required documentation present"
+
+  # ========================================
+  # Commit Message Validation
+  # ========================================
+  commit-validation:
+    name: Validate Commit Messages
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit messages
+        run: |
+          echo "Validating commit messages follow Conventional Commits..."
+
+          # Get commits in PR
+          COMMITS=$(git log --pretty=format:"%s" origin/${{ github.base_ref }}..HEAD)
+
+          if [ -z "$COMMITS" ]; then
+            echo "No commits to validate"
+            exit 0
+          fi
+
+          INVALID=0
+          while IFS= read -r msg; do
+            if echo "$msg" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|chore|ci)(\(.+\))?: .+'; then
+              echo "✅ Valid: $msg"
+            else
+              echo "❌ Invalid: $msg"
+              INVALID=$((INVALID + 1))
+            fi
+          done <<< "$COMMITS"
+
+          if [ $INVALID -gt 0 ]; then
+            echo ""
+            echo "❌ $INVALID commit message(s) do not follow Conventional Commits format"
+            echo ""
+            echo "Expected format: type(scope): subject"
+            echo "Valid types: feat, fix, docs, style, refactor, perf, test, chore, ci"
+            echo ""
+            echo "Examples:"
+            echo "  feat(game): add Envido betting logic"
+            echo "  fix(sync): resolve connection timeout issue"
+            echo "  docs: update installation instructions"
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ All commit messages are properly formatted"
+
+  # ========================================
+  # Summary
+  # ========================================
+  ci-summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, integration-tests, security, build, documentation, commit-validation]
+    if: always()
+
+    steps:
+      - name: Check CI status
+        run: |
+          echo "========================"
+          echo "🎴 Truco4AR CI Summary"
+          echo "========================"
+          echo ""
+
+          # Check if all jobs passed
+          if [ "${{ needs.lint.result }}" = "success" ] && \
+             [ "${{ needs.unit-tests.result }}" = "success" ] && \
+             [ "${{ needs.integration-tests.result }}" = "success" ] && \
+             [ "${{ needs.security.result }}" = "success" ] && \
+             [ "${{ needs.build.result }}" = "success" ] && \
+             [ "${{ needs.documentation.result }}" = "success" ]; then
+            echo "✅ All CI checks passed!"
+            echo ""
+            echo "Ready for code review and merge."
+            exit 0
+          else
+            echo "❌ Some CI checks failed:"
+            echo "  Lint: ${{ needs.lint.result }}"
+            echo "  Unit Tests: ${{ needs.unit-tests.result }}"
+            echo "  Integration Tests: ${{ needs.integration-tests.result }}"
+            echo "  Security: ${{ needs.security.result }}"
+            echo "  Build: ${{ needs.build.result }}"
+            echo "  Documentation: ${{ needs.documentation.result }}"
+            echo "  Commit Validation: ${{ needs.commit-validation.result }}"
+            echo ""
+            echo "Please fix failing checks before merging."
+            exit 1
+          fi
