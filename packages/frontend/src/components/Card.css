@@ -1,0 +1,123 @@
+.card {
+  position: relative;
+  width: 80px;
+  height: 120px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  cursor: default;
+  user-select: none;
+}
+
+.card--clickable {
+  cursor: pointer;
+}
+
+.card--playable {
+  cursor: pointer;
+  transform: translateY(-8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card--playable:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.card--played {
+  opacity: 0.7;
+  transform: rotate(90deg);
+}
+
+.card--face-down {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  cursor: default;
+}
+
+.card__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 8px;
+  position: relative;
+}
+
+.card__rank {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.card__rank--bottom {
+  transform: rotate(180deg);
+}
+
+.card__suit {
+  font-size: 36px;
+  margin: auto;
+}
+
+/* Spanish suit colors */
+.card--espadas .card__rank,
+.card--bastos .card__rank {
+  color: #2d3748;
+}
+
+.card--oros .card__rank,
+.card--copas .card__rank {
+  color: #c53030;
+}
+
+/* Back of card */
+.card__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.card__back-pattern {
+  font-size: 48px;
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    width: 64px;
+    height: 96px;
+  }
+
+  .card__rank {
+    font-size: 16px;
+  }
+
+  .card__suit {
+    font-size: 28px;
+  }
+
+  .card__back-pattern {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    width: 56px;
+    height: 84px;
+  }
+
+  .card__rank {
+    font-size: 14px;
+  }
+
+  .card__suit {
+    font-size: 24px;
+  }
+}

@@ -1,0 +1,40 @@
+.hand {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+  min-height: 140px;
+}
+
+.hand__card {
+  transition: all 0.3s ease;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .hand {
+    gap: 12px;
+    min-height: 112px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hand {
+    gap: 8px;
+    min-height: 100px;
+  }
+
+  /* On very small screens, overlap cards slightly */
+  .hand__card {
+    margin-left: -16px;
+  }
+
+  .hand__card:first-child {
+    margin-left: 0;
+  }
+
+  .hand__card:hover {
+    z-index: 10;
+  }
+}

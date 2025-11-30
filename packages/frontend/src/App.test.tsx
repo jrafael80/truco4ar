@@ -12,4 +12,17 @@ describe('App', () => {
     render(<App />);
     expect(screen.getByText('Multi-device Argentine Truco')).toBeInTheDocument();
   });
+
+  it('renders game components', () => {
+    render(<App />);
+    expect(screen.getByLabelText('Players')).toBeInTheDocument();
+    expect(screen.getByLabelText('Game score')).toBeInTheDocument();
+    expect(screen.getByLabelText('Played cards')).toBeInTheDocument();
+    expect(screen.getByLabelText('Player hand')).toBeInTheDocument();
+  });
+
+  it('displays player hand with cards', () => {
+    render(<App />);
+    expect(screen.getByText('Tu Mano')).toBeInTheDocument();
+  });
 });
