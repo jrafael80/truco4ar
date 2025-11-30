@@ -3,7 +3,6 @@
  */
 
 import {
-  GameConfig,
   FaltaEnvidoMode,
   DEFAULT_GAME_CONFIG,
   GAME_PRESETS,
@@ -65,7 +64,7 @@ describe('Game Configuration', () => {
     });
 
     it('should throw error for invalid number of players', () => {
-      const config = { ...DEFAULT_GAME_CONFIG, numPlayers: 3 as any };
+      const config = { ...DEFAULT_GAME_CONFIG, numPlayers: 3 as 2 | 4 | 6 };
       expect(() => validateGameConfig(config)).toThrow(
         'Number of players must be 2, 4, or 6'
       );

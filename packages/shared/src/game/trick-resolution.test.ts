@@ -122,7 +122,7 @@ describe('Trick Resolution', () => {
     });
 
     it('should not determine winner with 1 win after 1 trick', () => {
-      let hand = createHand(1);
+      const hand = createHand(1);
       hand.tricks[0] = setTrickResult(hand.tricks[0], TrickResult.TEAM1_WIN, 0);
 
       expect(determineHandWinner(hand)).toBeNull();

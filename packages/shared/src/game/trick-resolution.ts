@@ -3,7 +3,7 @@
  */
 
 import { compareCards, getWinningCard } from './card-hierarchy';
-import { PlayedCard, Trick, TrickResult, Hand } from '../types/game-state';
+import { Trick, TrickResult, Hand } from '../types/game-state';
 import { TeamId, PlayerPosition } from '../types/player';
 
 /**

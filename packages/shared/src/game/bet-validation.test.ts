@@ -11,7 +11,6 @@ import {
 } from './bet-validation';
 import {
   BetType,
-  BetStatus,
   createBet,
   respondToBet,
   createBettingState,

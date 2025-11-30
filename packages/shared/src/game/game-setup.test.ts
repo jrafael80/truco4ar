@@ -178,7 +178,7 @@ describe('Game Setup', () => {
     });
 
     it('should throw error for invalid number of players', () => {
-      expect(() => setupGame({ numPlayers: 3 as any })).toThrow(
+      expect(() => setupGame({ numPlayers: 3 as 2 | 4 | 6 })).toThrow(
         'Truco must be played with 2, 4, or 6 players'
       );
     });
@@ -339,7 +339,7 @@ describe('Game Setup', () => {
       const setup = setupGame({ numPlayers: 4 });
 
       for (let pos = 0; pos < 4; pos++) {
-        const player = getPlayerAtPosition(setup.players, pos as any);
+        const player = getPlayerAtPosition(setup.players, pos as 0 | 1 | 2 | 3 | 4 | 5);
         expect(player.position).toBe(pos);
       }
     });

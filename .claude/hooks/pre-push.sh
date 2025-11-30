@@ -58,7 +58,54 @@ else
 fi
 
 # ========================================
-# 2. Run Full Test Suite
+# 2. Run Linter
+# ========================================
+echo ""
+print_info "Running linter..."
+
+LINT_PASSED=0
+
+# Check if lint command exists (varies by stack)
+if [ -f "package.json" ] && command -v npm > /dev/null; then
+    # Node.js project
+    print_info "Running npm lint..."
+    if npm run lint; then
+        LINT_PASSED=1
+    fi
+elif [ -f "requirements.txt" ] && command -v pylint > /dev/null; then
+    # Python project
+    print_info "Running pylint..."
+    if pylint **/*.py; then
+        LINT_PASSED=1
+    fi
+elif [ -f "go.mod" ] && command -v golint > /dev/null; then
+    # Go project
+    print_info "Running golint..."
+    if golint ./...; then
+        LINT_PASSED=1
+    fi
+elif [ -f "Cargo.toml" ] && command -v cargo > /dev/null; then
+    # Rust project
+    print_info "Running cargo clippy..."
+    if cargo clippy -- -D warnings; then
+        LINT_PASSED=1
+    fi
+else
+    print_warning "No linter detected"
+    print_info "Linting will be required once tech stack is chosen"
+    LINT_PASSED=1  # Don't block push if no linter yet
+fi
+
+if [ $LINT_PASSED -eq 1 ]; then
+    print_success "Linting passed"
+else
+    print_error "Linting failed"
+    print_info "Fix linting errors before pushing"
+    CHECKS_FAILED=1
+fi
+
+# ========================================
+# 3. Run Full Test Suite
 # ========================================
 echo ""
 print_info "Running full test suite (unit + integration)..."
@@ -105,7 +152,7 @@ else
 fi
 
 # ========================================
-# 3. Check Test Coverage
+# 4. Check Test Coverage
 # ========================================
 echo ""
 print_info "Checking test coverage..."
@@ -132,7 +179,7 @@ else
 fi
 
 # ========================================
-# 4. Verify Commit Message Format
+# 5. Verify Commit Message Format
 # ========================================
 echo ""
 print_info "Verifying all commit messages follow Conventional Commits..."
@@ -163,7 +210,7 @@ else
 fi
 
 # ========================================
-# 5. Branch-Specific Checks
+# 6. Branch-Specific Checks
 # ========================================
 echo ""
 print_info "Running branch-specific checks..."
@@ -191,7 +238,7 @@ if [[ "$CURRENT_BRANCH" == "feature/"* ]]; then
 fi
 
 # ========================================
-# 6. Check for Large Files
+# 7. Check for Large Files
 # ========================================
 echo ""
 print_info "Checking for large files..."
@@ -216,7 +263,7 @@ if [ -n "$BINARY_FILES" ]; then
 fi
 
 # ========================================
-# 7. Verify No Uncommitted Changes
+# 8. Verify No Uncommitted Changes
 # ========================================
 echo ""
 print_info "Checking for uncommitted changes..."
@@ -229,7 +276,7 @@ else
 fi
 
 # ========================================
-# 8. Check Remote Status
+# 9. Check Remote Status
 # ========================================
 echo ""
 print_info "Checking remote status..."
