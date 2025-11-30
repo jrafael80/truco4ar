@@ -21,6 +21,7 @@ import {
   getNextTrucoBet,
   getTrucoPoints,
   getEnvidoPoints,
+  calculateEnvidoChainPoints,
   calculateFaltaEnvidoPoints
 } from './betting';
 
@@ -326,12 +327,12 @@ describe('Betting Types', () => {
         expect(getEnvidoPoints(BetType.ENVIDO)).toBe(2);
       });
 
-      it('should return 4 for ENVIDO_ENVIDO', () => {
-        expect(getEnvidoPoints(BetType.ENVIDO_ENVIDO)).toBe(4);
+      it('should return 2 for ENVIDO_ENVIDO (adds to chain)', () => {
+        expect(getEnvidoPoints(BetType.ENVIDO_ENVIDO)).toBe(2);
       });
 
-      it('should return 5 for REAL_ENVIDO', () => {
-        expect(getEnvidoPoints(BetType.REAL_ENVIDO)).toBe(5);
+      it('should return 3 for REAL_ENVIDO (adds to chain)', () => {
+        expect(getEnvidoPoints(BetType.REAL_ENVIDO)).toBe(3);
       });
 
       it('should return -1 for FALTA_ENVIDO (special case)', () => {
@@ -342,6 +343,72 @@ describe('Betting Types', () => {
         expect(getEnvidoPoints(BetType.TRUCO)).toBe(0);
         expect(getEnvidoPoints(BetType.FLOR)).toBe(0);
       });
+    });
+  });
+
+  describe('calculateEnvidoChainPoints', () => {
+    it('should return 0 for empty Envido chain', () => {
+      const state = createBettingState();
+      expect(calculateEnvidoChainPoints(state)).toBe(0);
+    });
+
+    it('should return 2 for single ENVIDO', () => {
+      let state = createBettingState();
+      const bet = createBet(BetType.ENVIDO, 'player-1', 'team-1', 2);
+      state = addBet(state, bet);
+
+      expect(calculateEnvidoChainPoints(state)).toBe(2);
+    });
+
+    it('should return 4 for ENVIDO + ENVIDO', () => {
+      let state = createBettingState();
+
+      const bet1 = createBet(BetType.ENVIDO, 'player-1', 'team-1', 2);
+      state = addBet(state, bet1);
+
+      const bet2 = createBet(BetType.ENVIDO_ENVIDO, 'player-2', 'team-2', 2);
+      state = addBet(state, bet2);
+
+      expect(calculateEnvidoChainPoints(state)).toBe(4); // 2 + 2
+    });
+
+    it('should return 7 for ENVIDO + ENVIDO + REAL_ENVIDO', () => {
+      let state = createBettingState();
+
+      const bet1 = createBet(BetType.ENVIDO, 'player-1', 'team-1', 2);
+      state = addBet(state, bet1);
+
+      const bet2 = createBet(BetType.ENVIDO_ENVIDO, 'player-2', 'team-2', 2);
+      state = addBet(state, bet2);
+
+      const bet3 = createBet(BetType.REAL_ENVIDO, 'player-1', 'team-1', 3);
+      state = addBet(state, bet3);
+
+      expect(calculateEnvidoChainPoints(state)).toBe(7); // 2 + 2 + 3
+    });
+
+    it('should return 5 for ENVIDO + REAL_ENVIDO', () => {
+      let state = createBettingState();
+
+      const bet1 = createBet(BetType.ENVIDO, 'player-1', 'team-1', 2);
+      state = addBet(state, bet1);
+
+      const bet2 = createBet(BetType.REAL_ENVIDO, 'player-2', 'team-2', 3);
+      state = addBet(state, bet2);
+
+      expect(calculateEnvidoChainPoints(state)).toBe(5); // 2 + 3
+    });
+
+    it('should ignore FALTA_ENVIDO in calculation', () => {
+      let state = createBettingState();
+
+      const bet1 = createBet(BetType.ENVIDO, 'player-1', 'team-1', 2);
+      state = addBet(state, bet1);
+
+      const bet2 = createBet(BetType.FALTA_ENVIDO, 'player-2', 'team-2', -1);
+      state = addBet(state, bet2);
+
+      expect(calculateEnvidoChainPoints(state)).toBe(2); // Only ENVIDO counts
     });
   });
 

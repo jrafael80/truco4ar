@@ -260,23 +260,41 @@ export function getTrucoPoints(betType: BetType): number {
 }
 
 /**
- * Gets the points value for an Envido bet
+ * Gets the points value for an Envido bet (individual value, not accumulated)
  * @param betType Envido bet type
- * @returns Points at stake
+ * @returns Points for this specific bet
  */
 export function getEnvidoPoints(betType: BetType): number {
   switch (betType) {
     case BetType.ENVIDO:
       return 2;
     case BetType.ENVIDO_ENVIDO:
-      return 4;
+      return 2; // Adds 2 more to the chain
     case BetType.REAL_ENVIDO:
-      return 5;
+      return 3; // Adds 3 more to the chain
     case BetType.FALTA_ENVIDO:
       return -1; // Special case, calculated based on game state
     default:
       return 0;
   }
+}
+
+/**
+ * Calculates the total accumulated points from all Envido bets in a chain
+ * @param state Current betting state
+ * @returns Total points at stake for all Envido bets
+ */
+export function calculateEnvidoChainPoints(state: BettingState): number {
+  let total = 0;
+
+  for (const bet of state.envidoBets) {
+    const points = getEnvidoPoints(bet.type);
+    if (points > 0) {
+      total += points;
+    }
+  }
+
+  return total;
 }
 
 /**
