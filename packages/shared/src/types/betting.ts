@@ -298,18 +298,59 @@ export function calculateEnvidoChainPoints(state: BettingState): number {
 }
 
 /**
- * Calculates Falta Envido points
+ * Calculates Falta Envido points according to official Truco rules
+ *
+ * Rules:
+ * - TO_LOSER mode (traditional):
+ *   - If both in "Las Malas": winner takes what loser needs
+ *   - If leader in "Las Buenas": winner takes what leader needs
+ * - TO_LEADER mode (aggressive):
+ *   - Always awards points the leader needs to win
+ * - If tied, uses points needed to win
+ *
  * @param team1Score Current score of team 1
  * @param team2Score Current score of team 2
  * @param winningScore Score needed to win (default: 30)
- * @returns Points for Falta Envido (minimum points needed by either team)
+ * @param lasBuenasThreshold Threshold for "Las Buenas" (default: 15)
+ * @param mode Falta Envido scoring mode (default: TO_LOSER)
+ * @returns Points for Falta Envido
  */
 export function calculateFaltaEnvidoPoints(
   team1Score: number,
   team2Score: number,
-  winningScore: number = 30
+  winningScore: number = 30,
+  lasBuenasThreshold: number = 15,
+  mode: 'to_loser' | 'to_leader' = 'to_loser'
 ): number {
   const team1Needed = winningScore - team1Score;
   const team2Needed = winningScore - team2Score;
-  return Math.min(team1Needed, team2Needed);
+
+  // Determine who is leading
+  const leader = team1Score > team2Score ? 'team1' :
+                 team2Score > team1Score ? 'team2' :
+                 'tied';
+
+  // If tied, use points needed to win (typically 30)
+  if (leader === 'tied') {
+    return team1Needed; // Both need the same amount
+  }
+
+  // Get leader's info
+  const leaderScore = leader === 'team1' ? team1Score : team2Score;
+  const leaderNeeded = leader === 'team1' ? team1Needed : team2Needed;
+  const loserNeeded = leader === 'team1' ? team2Needed : team1Needed;
+
+  // TO_LEADER mode: always award what leader needs
+  if (mode === 'to_leader') {
+    return leaderNeeded;
+  }
+
+  // TO_LOSER mode (traditional):
+  // If leader is in "Las Buenas" (>= 15 points)
+  if (leaderScore >= lasBuenasThreshold) {
+    return leaderNeeded; // Points the leader needs to win
+  }
+
+  // Both in "Las Malas": winner takes what loser needs
+  return loserNeeded;
 }

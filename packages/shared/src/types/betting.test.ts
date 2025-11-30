@@ -413,38 +413,79 @@ describe('Betting Types', () => {
   });
 
   describe('calculateFaltaEnvidoPoints', () => {
-    it('should return minimum points needed by either team', () => {
-      expect(calculateFaltaEnvidoPoints(20, 25, 30)).toBe(5); // Team 2 needs 5
-      expect(calculateFaltaEnvidoPoints(25, 20, 30)).toBe(5); // Team 1 needs 10, team 2 needs 10 -> min is 10
+    describe('TO_LOSER mode (default)', () => {
+      it('should award points leader needs when leader in Las Buenas', () => {
+        // Team 2 leading (25 vs 20), Team 2 in "Las Buenas" (>= 15)
+        // Awards what leader needs: 30 - 25 = 5
+        expect(calculateFaltaEnvidoPoints(20, 25, 30)).toBe(5);
+      });
+
+      it('should award points loser needs when both in Las Malas', () => {
+        // Team 1 leading (12 vs 8), both in "Las Malas" (< 15)
+        // Awards what loser needs: 30 - 8 = 22
+        expect(calculateFaltaEnvidoPoints(12, 8, 30)).toBe(22);
+      });
+
+      it('should calculate correctly when team 1 needs fewer points', () => {
+        // Team 1 leading (28 vs 20), Team 1 in "Las Buenas" (>= 15)
+        // Awards what leader needs: 30 - 28 = 2
+        expect(calculateFaltaEnvidoPoints(28, 20, 30)).toBe(2);
+      });
+
+      it('should calculate correctly when team 2 needs fewer points', () => {
+        // Team 2 leading (29 vs 10), Team 2 in "Las Buenas" (>= 15)
+        // Awards what leader needs: 30 - 29 = 1
+        expect(calculateFaltaEnvidoPoints(10, 29, 30)).toBe(1);
+      });
+
+      it('should handle equal scores', () => {
+        expect(calculateFaltaEnvidoPoints(15, 15, 30)).toBe(15); // Both need 15
+      });
+
+      it('should use default winning score of 30', () => {
+        // Team 2 leading (25 vs 20), Team 2 in "Las Buenas"
+        // Awards what leader needs: 5
+        expect(calculateFaltaEnvidoPoints(20, 25)).toBe(5);
+      });
+
+      it('should work with custom winning scores', () => {
+        // Game to 40, Team 2 leading (25 vs 20)
+        // Team 2 is in "Las Buenas" (>= default 15)
+        // TO_LOSER mode: awards what leader needs = 15 points (40-25)
+        expect(calculateFaltaEnvidoPoints(20, 25, 40)).toBe(15);
+
+        // Game to 15, Team 1 leading (6 vs 4), both in "Las Malas" (< threshold 8)
+        // TO_LOSER mode: winner takes what loser needs = 11 points (15-4)
+        expect(calculateFaltaEnvidoPoints(6, 4, 15, 8)).toBe(11);
+      });
+
+      it('should calculate max possible points (30 with scores at 0)', () => {
+        expect(calculateFaltaEnvidoPoints(0, 0, 30)).toBe(30);
+      });
+
+      it('should calculate when one team is close to winning', () => {
+        // Team 1 leading (29 vs 15), Team 1 in "Las Buenas"
+        // Awards what leader needs: 1
+        expect(calculateFaltaEnvidoPoints(29, 15, 30)).toBe(1);
+      });
     });
 
-    it('should calculate correctly when team 1 needs fewer points', () => {
-      expect(calculateFaltaEnvidoPoints(28, 20, 30)).toBe(2); // Team 1 needs 2
-    });
+    describe('TO_LEADER mode', () => {
+      it('should always award points leader needs', () => {
+        // Team 1 leading, both in "Las Malas"
+        // TO_LEADER mode: always awards what leader needs = 18
+        expect(calculateFaltaEnvidoPoints(12, 8, 30, 15, 'to_leader')).toBe(18);
 
-    it('should calculate correctly when team 2 needs fewer points', () => {
-      expect(calculateFaltaEnvidoPoints(10, 29, 30)).toBe(1); // Team 2 needs 1
-    });
+        // Team 2 leading, Team 2 in "Las Buenas"
+        // TO_LEADER mode: awards what leader needs = 5
+        expect(calculateFaltaEnvidoPoints(20, 25, 30, 15, 'to_leader')).toBe(5);
+      });
 
-    it('should handle equal scores', () => {
-      expect(calculateFaltaEnvidoPoints(15, 15, 30)).toBe(15); // Both need 15
-    });
-
-    it('should use default winning score of 30', () => {
-      expect(calculateFaltaEnvidoPoints(20, 25)).toBe(5);
-    });
-
-    it('should work with custom winning scores', () => {
-      expect(calculateFaltaEnvidoPoints(20, 25, 40)).toBe(15); // Team 2 needs 15
-      expect(calculateFaltaEnvidoPoints(10, 5, 15)).toBe(5); // Team 2 needs 10, team 1 needs 5 -> min is 5
-    });
-
-    it('should calculate max possible points (30 with scores at 0)', () => {
-      expect(calculateFaltaEnvidoPoints(0, 0, 30)).toBe(30);
-    });
-
-    it('should calculate when one team is close to winning', () => {
-      expect(calculateFaltaEnvidoPoints(29, 15, 30)).toBe(1); // Team 1 needs 1
+      it('should work regardless of Las Buenas threshold', () => {
+        // Team 1 leading (10 vs 5), both in "Las Malas" for game to 15
+        // TO_LEADER mode: awards what leader needs = 5 (15-10)
+        expect(calculateFaltaEnvidoPoints(10, 5, 15, 8, 'to_leader')).toBe(5);
+      });
     });
   });
 });

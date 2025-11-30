@@ -10,6 +10,7 @@ export * from './types/card';
 export * from './types/player';
 export * from './types/game-state';
 export * from './types/betting';
+export * from './types/game-config';
 
 // Game Logic
 export * from './game/card-hierarchy';

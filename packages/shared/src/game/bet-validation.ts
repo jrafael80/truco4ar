@@ -4,6 +4,7 @@
 
 import { BetType, BettingState, isTrucoBet, isEnvidoBet, isFlorBet } from '../types/betting';
 import { GamePhase } from '../types/game-state';
+import { GameConfig, DEFAULT_GAME_CONFIG } from '../types/game-config';
 
 /**
  * Validates if a Truco bet can be called
@@ -43,12 +44,14 @@ export function canCallTrucoBet(state: BettingState, betType: BetType): boolean 
  * @param state Current betting state
  * @param betType Type of Envido bet
  * @param phase Current game phase
+ * @param config Game configuration (optional, uses default if not provided)
  * @returns True if bet is valid
  */
 export function canCallEnvidoBet(
   state: BettingState,
   betType: BetType,
-  phase: GamePhase
+  phase: GamePhase,
+  config: GameConfig = DEFAULT_GAME_CONFIG
 ): boolean {
   if (!isEnvidoBet(betType)) {
     return false;
@@ -78,10 +81,18 @@ export function canCallEnvidoBet(
   }
 
   // Real Envido can be called after Envido or Envido Envido
+  // If realEnvidoMultiple is enabled, it can be called multiple times
   if (betType === BetType.REAL_ENVIDO) {
-    return (lastEnvidoBet?.type === BetType.ENVIDO ||
-            lastEnvidoBet?.type === BetType.ENVIDO_ENVIDO) &&
-           (lastEnvidoBet.status === 'accepted' || lastEnvidoBet.status === 'raised');
+    if (config.realEnvidoMultiple) {
+      // Can be called after any Envido bet (except pending)
+      return lastEnvidoBet !== undefined &&
+             lastEnvidoBet.status !== 'pending';
+    } else {
+      // Traditional: only once after Envido or Envido Envido
+      return (lastEnvidoBet?.type === BetType.ENVIDO ||
+              lastEnvidoBet?.type === BetType.ENVIDO_ENVIDO) &&
+             (lastEnvidoBet.status === 'accepted' || lastEnvidoBet.status === 'raised');
+    }
   }
 
   // Falta Envido can be called after any Envido bet
@@ -99,15 +110,22 @@ export function canCallEnvidoBet(
  * @param betType Type of Flor bet
  * @param phase Current game phase
  * @param playerHasFlor Whether the calling player has Flor
+ * @param config Game configuration (optional, uses default if not provided)
  * @returns True if bet is valid
  */
 export function canCallFlorBet(
   state: BettingState,
   betType: BetType,
   phase: GamePhase,
-  playerHasFlor: boolean
+  playerHasFlor: boolean,
+  config: GameConfig = DEFAULT_GAME_CONFIG
 ): boolean {
   if (!isFlorBet(betType)) {
+    return false;
+  }
+
+  // Flor must be enabled in game configuration
+  if (!config.florEnabled) {
     return false;
   }
 
