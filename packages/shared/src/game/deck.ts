@@ -73,15 +73,16 @@ export function dealCards(
 ): DealResult {
   const totalCardsNeeded = numPlayers * cardsPerPlayer;
 
+  if (numPlayers !== 2 && numPlayers !== 4) {
+    throw new Error('Truco must be played with 2 or 4 players');
+  }
+  
   if (deck.length < totalCardsNeeded) {
     throw new Error(
       `Not enough cards in deck. Need ${totalCardsNeeded}, have ${deck.length}`
     );
   }
 
-  if (numPlayers !== 2 && numPlayers !== 4) {
-    throw new Error('Truco must be played with 2 or 4 players');
-  }
 
   const hands: Card[][] = [];
   const deckCopy = [...deck];

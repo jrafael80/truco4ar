@@ -7,7 +7,9 @@
 
 // Types
 export * from './types/card';
+export * from './types/player';
 
 // Game Logic
 export * from './game/card-hierarchy';
 export * from './game/deck';
+export * from './game/game-setup';
