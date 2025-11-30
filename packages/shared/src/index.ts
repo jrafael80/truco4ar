@@ -9,9 +9,12 @@
 export * from './types/card';
 export * from './types/player';
 export * from './types/game-state';
+export * from './types/betting';
 
 // Game Logic
 export * from './game/card-hierarchy';
 export * from './game/deck';
 export * from './game/game-setup';
 export * from './game/trick-resolution';
+export * from './game/envido';
+export * from './game/bet-validation';
