@@ -11,6 +11,13 @@ Truco4AR brings the traditional Argentine card game Truco into the digital age. 
 - **Multi-Device Gameplay**: Each player uses their phone as their hand of cards
 - **QR Code Synchronization**: Easy device pairing to join game tables
 - **Voice-Enabled Scoring**: Automatic point tracking through voice commands (with manual editing support)
+- **Configurable Rules**: Customize game variants
+  - 2, 4, or 6 players
+  - 6-player modes: Standard team play (2 teams of 3) or Pica Pica (all individual)
+  - Enable/disable Flor betting
+  - Flexible Envido rules (Real Envido multiple calls)
+  - Falta Envido modes (to leader/to loser)
+  - Custom winning scores (15 or 30 points)
 - **Flexible Display Options**:
   - Player view on each device
   - Optional shared table view on a separate display
@@ -20,6 +27,7 @@ Truco4AR brings the traditional Argentine card game Truco into the digital age. 
 
 - [Product Specifications](docs/PRODUCT_SPECS.md) - Product vision and features
 - [Truco Rules](docs/TRUCO_RULES.md) - Complete Argentine Truco rules
+- [Game Configuration](docs/GAME_CONFIG.md) - Configurable rules and game variants
 - [User Flows](docs/USER_FLOWS.md) - Detailed user experience flows
 - [Architecture](docs/ARCHITECTURE.md) - System architecture and design
 - [Testing Strategy](docs/TESTING_STRATEGY.md) - Testing approach and guidelines
