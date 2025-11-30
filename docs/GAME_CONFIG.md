@@ -8,6 +8,7 @@ Truco4AR supports multiple game variants and rule customizations to accommodate 
 
 - **2 players**: Head-to-head play (mano a mano)
 - **4 players**: Team play with partners (traditional)
+- **6 players**: Extended team play or Pica Pica mode
 
 ### Flor Betting
 
@@ -78,6 +79,19 @@ Score threshold for "Las Buenas" (the second half of the game).
 
 **Default**: `15`
 
+### Pica Pica Mode
+
+**`picaPicaMode: boolean`**
+
+Enable Pica Pica mode for 6-player games. In this mode, all 6 players play individually (no teams). Each player competes for themselves to reach the winning score first.
+
+- `true`: All 6 players play individually
+- `false`: Standard team mode (2 teams of 3 players)
+
+**Note**: Only available when `numPlayers` is 6. Ignored for other player counts.
+
+**Default**: `false`
+
 ## Presets
 
 Truco4AR includes several preset configurations:
@@ -104,11 +118,42 @@ Classic 4-player Argentine Truco with Flor.
   realEnvidoMultiple: false,
   faltaEnvidoMode: FaltaEnvidoMode.TO_LOSER,
   winningScore: 30,
-  lasBuenasThreshold: 15
+  lasBuenasThreshold: 15,
+  picaPicaMode: false
 }
 ```
 
 Head-to-head play without Flor.
+
+### SIX_PLAYER
+```typescript
+{
+  numPlayers: 6,
+  florEnabled: true,
+  realEnvidoMultiple: false,
+  faltaEnvidoMode: FaltaEnvidoMode.TO_LOSER,
+  winningScore: 30,
+  lasBuenasThreshold: 15,
+  picaPicaMode: false
+}
+```
+
+6-player team mode with 2 teams of 3 players each. Players at positions 0, 2, and 4 are on Team 1, while players at positions 1, 3, and 5 are on Team 2.
+
+### PICA_PICA
+```typescript
+{
+  numPlayers: 6,
+  florEnabled: false,
+  realEnvidoMultiple: false,
+  faltaEnvidoMode: FaltaEnvidoMode.TO_LOSER,
+  winningScore: 30,
+  lasBuenasThreshold: 15,
+  picaPicaMode: true
+}
+```
+
+Pica Pica mode where all 6 players compete individually. Each player has their own score and competes against all others. Flor is typically disabled in this mode.
 
 ### QUICK
 ```typescript
@@ -165,6 +210,21 @@ const config = createGameConfig({
   florEnabled: false,
   realEnvidoMultiple: true
 });
+
+// Create a 6-player Pica Pica game
+const picaPicaConfig = createGameConfig({
+  numPlayers: 6,
+  picaPicaMode: true,
+  florEnabled: false,
+  winningScore: 30
+});
+
+// Create a standard 6-player team game
+const sixPlayerConfig = createGameConfig({
+  numPlayers: 6,
+  florEnabled: true,
+  picaPicaMode: false
+});
 ```
 
 ### Using a Preset
@@ -174,6 +234,12 @@ import { GAME_PRESETS } from '@truco4ar/shared';
 
 // Use the quick game preset
 const config = GAME_PRESETS.QUICK;
+
+// Use the 6-player team preset
+const sixPlayerConfig = GAME_PRESETS.SIX_PLAYER;
+
+// Use the Pica Pica preset
+const picaPicaConfig = GAME_PRESETS.PICA_PICA;
 ```
 
 ### Validating Configuration
@@ -279,6 +345,64 @@ When building a full application, store the game configuration:
 - **In game sessions**: Include config in session state
 - **In user preferences**: Let players save their preferred rules
 - **In matchmaking**: Match players with compatible rule preferences
+
+## 6-Player Game Modes
+
+Truco4AR now supports 6-player games in two distinct modes:
+
+### Standard 6-Player Team Mode
+
+In standard 6-player mode, players are divided into 2 teams of 3:
+- **Team 1**: Players at positions 0, 2, and 4
+- **Team 2**: Players at positions 1, 3, and 5
+
+Players sit alternating around the table, with teammates positioned every other seat. This maintains the traditional Truco dynamic of team play while accommodating more players.
+
+```typescript
+import { setupGame } from '@truco4ar/shared';
+
+const setup = setupGame({ numPlayers: 6 });
+// Creates 2 teams of 3 players each
+```
+
+### Pica Pica Mode
+
+Pica Pica is a unique 6-player variant where each player competes individually:
+- Each of the 6 players has their own score
+- No teams - every player plays for themselves
+- First player to reach the winning score wins
+- Flor is typically disabled in this mode
+
+```typescript
+import { setupGame } from '@truco4ar/shared';
+
+const setup = setupGame({ numPlayers: 6, picaPicaMode: true });
+// Creates 6 individual teams, one per player
+```
+
+### Important Differences
+
+**Betting in Pica Pica:**
+- Since there are no teams, betting dynamics change
+- Each player's decisions affect only their own score
+- The `getOpposingTeams()` helper returns all other players (5 opponents)
+
+**Team-based Functions:**
+- `getOpposingTeam()`: Only works in standard 2-team mode
+- `getOpposingTeams()`: Works in all modes, returns array of opposing teams
+- `getTeamPlayers()`: Returns a single player in Pica Pica mode
+
+### Choosing the Right Mode
+
+**Use Standard 6-Player when:**
+- You want traditional team dynamics
+- Players know each other and want to form partnerships
+- You want strategic team coordination
+
+**Use Pica Pica when:**
+- Every player wants to compete independently
+- You want faster-paced gameplay
+- Ideal for casual mixed-skill groups
 
 ## Future Extensions
 

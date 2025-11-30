@@ -15,11 +15,14 @@ export type PlayerId = string;
 export type TeamId = string;
 
 /**
- * Player position in a 4-player game
- * Players 0 and 2 are on one team (sitting across from each other)
- * Players 1 and 3 are on the other team (sitting across from each other)
+ * Player position around the table
+ * - 2 players: positions 0, 1
+ * - 4 players: positions 0, 1, 2, 3 (0 and 2 on same team, 1 and 3 on same team)
+ * - 6 players: positions 0, 1, 2, 3, 4, 5
+ *   - Team mode: 0, 2, 4 on team 1, 1, 3, 5 on team 2
+ *   - Pica Pica: all individual
  */
-export type PlayerPosition = 0 | 1 | 2 | 3;
+export type PlayerPosition = 0 | 1 | 2 | 3 | 4 | 5;
 
 /**
  * Player state during a game

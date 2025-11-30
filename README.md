@@ -12,7 +12,8 @@ Truco4AR brings the traditional Argentine card game Truco into the digital age. 
 - **QR Code Synchronization**: Easy device pairing to join game tables
 - **Voice-Enabled Scoring**: Automatic point tracking through voice commands (with manual editing support)
 - **Configurable Rules**: Customize game variants
-  - 2 or 4 players
+  - 2, 4, or 6 players
+  - 6-player modes: Standard team play (2 teams of 3) or Pica Pica (all individual)
   - Enable/disable Flor betting
   - Flexible Envido rules (Real Envido multiple calls)
   - Falta Envido modes (to leader/to loser)

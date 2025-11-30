@@ -11,7 +11,8 @@ import {
   getPlayerAtPosition,
   getTeamPlayers,
   getPlayerTeam,
-  getOpposingTeam
+  getOpposingTeam,
+  getOpposingTeams
 } from './game-setup';
 
 describe('Game Setup', () => {
@@ -113,9 +114,72 @@ describe('Game Setup', () => {
       });
     });
 
+    it('should set up a 6-player game', () => {
+      const setup = setupGame({ numPlayers: 6 });
+
+      expect(setup.players).toHaveLength(6);
+      expect(setup.teams).toHaveLength(2);
+      expect(setup.dealerPosition).toBe(0);
+    });
+
+    it('should assign players to alternating teams in 6-player game', () => {
+      const setup = setupGame({ numPlayers: 6 });
+
+      expect(setup.players[0].teamId).toBe('team-1');
+      expect(setup.players[1].teamId).toBe('team-2');
+      expect(setup.players[2].teamId).toBe('team-1');
+      expect(setup.players[3].teamId).toBe('team-2');
+      expect(setup.players[4].teamId).toBe('team-1');
+      expect(setup.players[5].teamId).toBe('team-2');
+    });
+
+    it('should assign correct positions in 6-player game', () => {
+      const setup = setupGame({ numPlayers: 6 });
+
+      expect(setup.players[0].position).toBe(0);
+      expect(setup.players[1].position).toBe(1);
+      expect(setup.players[2].position).toBe(2);
+      expect(setup.players[3].position).toBe(3);
+      expect(setup.players[4].position).toBe(4);
+      expect(setup.players[5].position).toBe(5);
+    });
+
+    it('should populate team player IDs correctly in 6-player game', () => {
+      const setup = setupGame({ numPlayers: 6 });
+
+      const team1 = setup.teams.find(t => t.id === 'team-1');
+      const team2 = setup.teams.find(t => t.id === 'team-2');
+
+      expect(team1?.playerIds).toEqual(['player-0', 'player-2', 'player-4']);
+      expect(team2?.playerIds).toEqual(['player-1', 'player-3', 'player-5']);
+    });
+
+    it('should set up Pica Pica mode with 6 individual teams', () => {
+      const setup = setupGame({ numPlayers: 6, picaPicaMode: true });
+
+      expect(setup.players).toHaveLength(6);
+      expect(setup.teams).toHaveLength(6); // Each player is their own team
+
+      // Each player should have a unique team
+      setup.players.forEach((player, index) => {
+        expect(player.teamId).toBe(`team-${index}`);
+      });
+
+      // Each team should have exactly one player
+      setup.teams.forEach((team, index) => {
+        expect(team.playerIds).toEqual([`player-${index}`]);
+      });
+    });
+
+    it('should throw error for Pica Pica mode with non-6 players', () => {
+      expect(() => setupGame({ numPlayers: 4, picaPicaMode: true })).toThrow(
+        'Pica Pica mode is only available for 6-player games'
+      );
+    });
+
     it('should throw error for invalid number of players', () => {
       expect(() => setupGame({ numPlayers: 3 as any })).toThrow(
-        'Truco must be played with 2 or 4 players'
+        'Truco must be played with 2, 4, or 6 players'
       );
     });
 
@@ -377,7 +441,7 @@ describe('Game Setup', () => {
       const threeTeams = [...setup.teams, { ...setup.teams[0], id: 'team-3' }];
 
       expect(() => getOpposingTeam(threeTeams, 'team-1')).toThrow(
-        'Game must have exactly 2 teams'
+        'getOpposingTeam requires exactly 2 teams (not applicable in Pica Pica mode)'
       );
     });
 
@@ -387,6 +451,86 @@ describe('Game Setup', () => {
       expect(() => getOpposingTeam(setup.teams, 'team-999')).toThrow(
         'No opposing team found for team-999'
       );
+    });
+  });
+
+  describe('getOpposingTeams', () => {
+    it('should return all opposing teams in standard 2-team mode', () => {
+      const setup = setupGame({ numPlayers: 4 });
+      const opposing = getOpposingTeams(setup.teams, 'team-1');
+
+      expect(opposing).toHaveLength(1);
+      expect(opposing[0].id).toBe('team-2');
+    });
+
+    it('should return all opposing teams in Pica Pica mode', () => {
+      const setup = setupGame({ numPlayers: 6, picaPicaMode: true });
+      const opposing = getOpposingTeams(setup.teams, 'team-0');
+
+      expect(opposing).toHaveLength(5);
+      expect(opposing.map(t => t.id)).toEqual(['team-1', 'team-2', 'team-3', 'team-4', 'team-5']);
+    });
+
+    it('should work for any team in Pica Pica mode', () => {
+      const setup = setupGame({ numPlayers: 6, picaPicaMode: true });
+      const opposing = getOpposingTeams(setup.teams, 'team-3');
+
+      expect(opposing).toHaveLength(5);
+      expect(opposing.map(t => t.id)).toEqual(['team-0', 'team-1', 'team-2', 'team-4', 'team-5']);
+    });
+
+    it('should throw error for non-existent team', () => {
+      const setup = setupGame({ numPlayers: 4 });
+
+      expect(() => getOpposingTeams(setup.teams, 'team-999')).toThrow(
+        'Team team-999 not found'
+      );
+    });
+  });
+
+  describe('6-player game turn order', () => {
+    it('should work with 6 players', () => {
+      const setup = setupGame({ numPlayers: 6 });
+      const ordered = getPlayersInTurnOrder(setup.players, 2);
+
+      expect(ordered.map(p => p.position)).toEqual([2, 3, 4, 5, 0, 1]);
+    });
+
+    it('should rotate dealer through all 6 positions', () => {
+      const setup = setupGame({ numPlayers: 6 });
+
+      let players = setup.players;
+      expect(players[0].isDealer).toBe(true);
+
+      players = rotateDealer(players, 0);
+      expect(players[1].isDealer).toBe(true);
+
+      players = rotateDealer(players, 1);
+      expect(players[2].isDealer).toBe(true);
+
+      players = rotateDealer(players, 2);
+      expect(players[3].isDealer).toBe(true);
+
+      players = rotateDealer(players, 3);
+      expect(players[4].isDealer).toBe(true);
+
+      players = rotateDealer(players, 4);
+      expect(players[5].isDealer).toBe(true);
+
+      players = rotateDealer(players, 5);
+      expect(players[0].isDealer).toBe(true);
+    });
+
+    it('should get team players in 6-player game', () => {
+      const setup = setupGame({ numPlayers: 6 });
+      const team1Players = getTeamPlayers(setup.players, 'team-1');
+      const team2Players = getTeamPlayers(setup.players, 'team-2');
+
+      expect(team1Players).toHaveLength(3);
+      expect(team1Players.map(p => p.position)).toEqual([0, 2, 4]);
+
+      expect(team2Players).toHaveLength(3);
+      expect(team2Players.map(p => p.position)).toEqual([1, 3, 5]);
     });
   });
 });

@@ -17,8 +17,8 @@ export enum FaltaEnvidoMode {
  * Game configuration for Truco rules
  */
 export interface GameConfig {
-  /** Number of players (2 or 4) */
-  readonly numPlayers: 2 | 4;
+  /** Number of players (2, 4, or 6) */
+  readonly numPlayers: 2 | 4 | 6;
 
   /** Enable Flor betting */
   readonly florEnabled: boolean;
@@ -34,6 +34,13 @@ export interface GameConfig {
 
   /** Threshold for "Las Buenas" (typically 15) */
   readonly lasBuenasThreshold: number;
+
+  /**
+   * Enable Pica Pica mode for 6-player games
+   * In Pica Pica mode, all 6 players play individually (no teams)
+   * Ignored if numPlayers is not 6
+   */
+  readonly picaPicaMode: boolean;
 }
 
 /**
@@ -45,7 +52,8 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
   realEnvidoMultiple: false,
   faltaEnvidoMode: FaltaEnvidoMode.TO_LOSER,
   winningScore: 30,
-  lasBuenasThreshold: 15
+  lasBuenasThreshold: 15,
+  picaPicaMode: false
 };
 
 /**
@@ -67,8 +75,8 @@ export function createGameConfig(options: Partial<GameConfig> = {}): GameConfig 
  * @throws Error if configuration is invalid
  */
 export function validateGameConfig(config: GameConfig): boolean {
-  if (config.numPlayers !== 2 && config.numPlayers !== 4) {
-    throw new Error('Number of players must be 2 or 4');
+  if (config.numPlayers !== 2 && config.numPlayers !== 4 && config.numPlayers !== 6) {
+    throw new Error('Number of players must be 2, 4, or 6');
   }
 
   if (config.winningScore <= 0) {
@@ -77,6 +85,11 @@ export function validateGameConfig(config: GameConfig): boolean {
 
   if (config.lasBuenasThreshold < 0 || config.lasBuenasThreshold >= config.winningScore) {
     throw new Error('Las Buenas threshold must be between 0 and winning score');
+  }
+
+  // Pica Pica mode validation
+  if (config.picaPicaMode && config.numPlayers !== 6) {
+    throw new Error('Pica Pica mode is only available for 6-player games');
   }
 
   return true;
@@ -93,6 +106,20 @@ export const GAME_PRESETS = {
   TWO_PLAYER: createGameConfig({
     numPlayers: 2,
     florEnabled: false
+  }),
+
+  /** 6-player team game (2 teams of 3) */
+  SIX_PLAYER: createGameConfig({
+    numPlayers: 6,
+    florEnabled: true,
+    picaPicaMode: false
+  }),
+
+  /** 6-player Pica Pica mode (all players individual) */
+  PICA_PICA: createGameConfig({
+    numPlayers: 6,
+    florEnabled: false,
+    picaPicaMode: true
   }),
 
   /** Quick game to 15 points */
