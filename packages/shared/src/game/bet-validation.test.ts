@@ -300,7 +300,9 @@ describe('Bet Validation', () => {
       const acceptedContraFlor = respondToBet(contraFlorBet, BetResponse.ACCEPT, 'player-1');
       state = addBet(state, acceptedContraFlor);
 
-      expect(canCallFlorBet(state, BetType.CONTRA_FLOR_AL_RESTO, GamePhase.BETTING, true)).toBe(true);
+      expect(canCallFlorBet(state, BetType.CONTRA_FLOR_AL_RESTO, GamePhase.BETTING, true)).toBe(
+        true
+      );
     });
 
     it('should not allow CONTRA_FLOR_AL_RESTO when CONTRA_FLOR is pending', () => {
@@ -312,7 +314,9 @@ describe('Bet Validation', () => {
       const contraFlorBet = createBet(BetType.CONTRA_FLOR, 'player-2', 'team-2', 6);
       state = addBet(state, contraFlorBet);
 
-      expect(canCallFlorBet(state, BetType.CONTRA_FLOR_AL_RESTO, GamePhase.BETTING, true)).toBe(false);
+      expect(canCallFlorBet(state, BetType.CONTRA_FLOR_AL_RESTO, GamePhase.BETTING, true)).toBe(
+        false
+      );
     });
 
     it('should return false for non-Flor bet types', () => {

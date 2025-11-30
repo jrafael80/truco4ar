@@ -53,9 +53,7 @@ export function calculateEnvidoScore(hand: Card[]): number {
 
     if (cardsOfSuit.length >= 2) {
       // Get Envido values and sort descending
-      const values = cardsOfSuit
-        .map(getEnvidoValue)
-        .sort((a, b) => b - a);
+      const values = cardsOfSuit.map(getEnvidoValue).sort((a, b) => b - a);
 
       // Take two highest cards + 20
       const score = values[0] + values[1] + 20;
@@ -164,10 +162,7 @@ export function determineEnvidoWinner(
  * @param score2 Flor score of team 2 (null if no Flor)
  * @returns 1 if team 1 wins, 2 if team 2 wins, null if no one has Flor
  */
-export function determineFlorWinner(
-  score1: number | null,
-  score2: number | null
-): 1 | 2 | null {
+export function determineFlorWinner(score1: number | null, score2: number | null): 1 | 2 | null {
   // If neither has Flor
   if (score1 === null && score2 === null) {
     return null;

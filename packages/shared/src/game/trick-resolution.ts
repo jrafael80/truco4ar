@@ -174,10 +174,7 @@ export function needsAnotherTrick(hand: Hand): boolean {
  * @param previousLeader Position of the player who led the current trick
  * @returns Position of player who should lead next trick
  */
-export function getNextTrickLeader(
-  hand: Hand,
-  previousLeader: PlayerPosition
-): PlayerPosition {
+export function getNextTrickLeader(hand: Hand, previousLeader: PlayerPosition): PlayerPosition {
   const currentTrickIndex = hand.currentTrick;
 
   if (currentTrickIndex === 0) {

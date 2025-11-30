@@ -9,12 +9,12 @@ import { Player, Team, PlayerId, TeamId, PlayerPosition } from './player';
  * Game phase enumeration
  */
 export enum GamePhase {
-  WAITING = 'waiting',      // Waiting for players
-  DEALING = 'dealing',      // Cards being dealt
-  BETTING = 'betting',      // Envido/Flor betting phase
-  PLAYING = 'playing',      // Playing tricks
-  SCORING = 'scoring',      // Calculating scores
-  FINISHED = 'finished'     // Game over
+  WAITING = 'waiting', // Waiting for players
+  DEALING = 'dealing', // Cards being dealt
+  BETTING = 'betting', // Envido/Flor betting phase
+  PLAYING = 'playing', // Playing tricks
+  SCORING = 'scoring', // Calculating scores
+  FINISHED = 'finished' // Game over
 }
 
 /**
@@ -23,7 +23,7 @@ export enum GamePhase {
 export enum TrickResult {
   TEAM1_WIN = 'team1_win',
   TEAM2_WIN = 'team2_win',
-  PARDA = 'parda'           // Tie
+  PARDA = 'parda' // Tie
 }
 
 /**
@@ -39,7 +39,7 @@ export interface PlayedCard {
  * A single trick (baza) in a hand
  */
 export interface Trick {
-  readonly trickNumber: number;        // 1, 2, or 3
+  readonly trickNumber: number; // 1, 2, or 3
   readonly playedCards: PlayedCard[];
   readonly result: TrickResult | null;
   readonly winnerPosition: PlayerPosition | null;
@@ -51,9 +51,9 @@ export interface Trick {
 export interface Hand {
   readonly handNumber: number;
   readonly tricks: Trick[];
-  readonly currentTrick: number;       // 0, 1, or 2
+  readonly currentTrick: number; // 0, 1, or 2
   readonly winner: TeamId | null;
-  readonly pointsAtStake: number;      // Points for winning this hand (Truco value)
+  readonly pointsAtStake: number; // Points for winning this hand (Truco value)
 }
 
 /**

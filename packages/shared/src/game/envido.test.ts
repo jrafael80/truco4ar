@@ -68,11 +68,7 @@ describe('Envido', () => {
     });
 
     it('should calculate max score (33)', () => {
-      const hand = [
-        createCard(7, Suit.OROS),
-        createCard(6, Suit.OROS),
-        createCard(1, Suit.BASTOS)
-      ];
+      const hand = [createCard(7, Suit.OROS), createCard(6, Suit.OROS), createCard(1, Suit.BASTOS)];
       expect(calculateEnvidoScore(hand)).toBe(33);
     });
   });

@@ -26,14 +26,12 @@ export function canCallTrucoBet(state: BettingState, betType: BetType): boolean 
 
   // Retruco can only be called after Truco is accepted
   if (betType === BetType.RETRUCO) {
-    return lastTrucoBet?.type === BetType.TRUCO &&
-           lastTrucoBet.status === 'accepted';
+    return lastTrucoBet?.type === BetType.TRUCO && lastTrucoBet.status === 'accepted';
   }
 
   // Vale Cuatro can only be called after Retruco is accepted
   if (betType === BetType.VALE_CUATRO) {
-    return lastTrucoBet?.type === BetType.RETRUCO &&
-           lastTrucoBet.status === 'accepted';
+    return lastTrucoBet?.type === BetType.RETRUCO && lastTrucoBet.status === 'accepted';
   }
 
   return false;
@@ -76,8 +74,10 @@ export function canCallEnvidoBet(
 
   // Envido Envido can be called after Envido
   if (betType === BetType.ENVIDO_ENVIDO) {
-    return lastEnvidoBet?.type === BetType.ENVIDO &&
-           (lastEnvidoBet.status === 'accepted' || lastEnvidoBet.status === 'raised');
+    return (
+      lastEnvidoBet?.type === BetType.ENVIDO &&
+      (lastEnvidoBet.status === 'accepted' || lastEnvidoBet.status === 'raised')
+    );
   }
 
   // Real Envido can be called after Envido or Envido Envido
@@ -85,20 +85,22 @@ export function canCallEnvidoBet(
   if (betType === BetType.REAL_ENVIDO) {
     if (config.realEnvidoMultiple) {
       // Can be called after any Envido bet (except pending)
-      return lastEnvidoBet !== undefined &&
-             lastEnvidoBet.status !== 'pending';
+      return lastEnvidoBet !== undefined && lastEnvidoBet.status !== 'pending';
     } else {
       // Traditional: only once after Envido or Envido Envido
-      return (lastEnvidoBet?.type === BetType.ENVIDO ||
-              lastEnvidoBet?.type === BetType.ENVIDO_ENVIDO) &&
-             (lastEnvidoBet.status === 'accepted' || lastEnvidoBet.status === 'raised');
+      return (
+        (lastEnvidoBet?.type === BetType.ENVIDO || lastEnvidoBet?.type === BetType.ENVIDO_ENVIDO) &&
+        (lastEnvidoBet.status === 'accepted' || lastEnvidoBet.status === 'raised')
+      );
     }
   }
 
   // Falta Envido can be called after any Envido bet
   if (betType === BetType.FALTA_ENVIDO) {
-    return lastEnvidoBet !== undefined &&
-           (lastEnvidoBet.status === 'accepted' || lastEnvidoBet.status === 'raised');
+    return (
+      lastEnvidoBet !== undefined &&
+      (lastEnvidoBet.status === 'accepted' || lastEnvidoBet.status === 'raised')
+    );
   }
 
   return false;
@@ -153,15 +155,12 @@ export function canCallFlorBet(
 
   // Contra Flor can be called in response to Flor
   if (betType === BetType.CONTRA_FLOR) {
-    return lastFlorBet?.type === BetType.FLOR &&
-           lastFlorBet.status === 'pending' &&
-           playerHasFlor;
+    return lastFlorBet?.type === BetType.FLOR && lastFlorBet.status === 'pending' && playerHasFlor;
   }
 
   // Contra Flor al Resto can be called after Contra Flor
   if (betType === BetType.CONTRA_FLOR_AL_RESTO) {
-    return lastFlorBet?.type === BetType.CONTRA_FLOR &&
-           lastFlorBet.status === 'accepted';
+    return lastFlorBet?.type === BetType.CONTRA_FLOR && lastFlorBet.status === 'accepted';
   }
 
   return false;
@@ -226,7 +225,8 @@ export function getDeclinePoints(betType: BetType, state: BettingState): number 
     for (let i = 0; i < envidoBets.length - 1; i++) {
       const bet = envidoBets[i];
       if (bet.type === BetType.ENVIDO) total += 2;
-      else if (bet.type === BetType.ENVIDO_ENVIDO) total += 2; // Additional 2
+      else if (bet.type === BetType.ENVIDO_ENVIDO)
+        total += 2; // Additional 2
       else if (bet.type === BetType.REAL_ENVIDO) total += 3; // Additional 3
     }
     return total || 1; // At least 1 point

@@ -65,23 +65,17 @@ describe('Game Configuration', () => {
 
     it('should throw error for invalid number of players', () => {
       const config = { ...DEFAULT_GAME_CONFIG, numPlayers: 3 as 2 | 4 | 6 };
-      expect(() => validateGameConfig(config)).toThrow(
-        'Number of players must be 2, 4, or 6'
-      );
+      expect(() => validateGameConfig(config)).toThrow('Number of players must be 2, 4, or 6');
     });
 
     it('should throw error for negative winning score', () => {
       const config = createGameConfig({ winningScore: -1 });
-      expect(() => validateGameConfig(config)).toThrow(
-        'Winning score must be positive'
-      );
+      expect(() => validateGameConfig(config)).toThrow('Winning score must be positive');
     });
 
     it('should throw error for zero winning score', () => {
       const config = createGameConfig({ winningScore: 0 });
-      expect(() => validateGameConfig(config)).toThrow(
-        'Winning score must be positive'
-      );
+      expect(() => validateGameConfig(config)).toThrow('Winning score must be positive');
     });
 
     it('should throw error for negative Las Buenas threshold', () => {

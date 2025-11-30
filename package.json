@@ -15,6 +15,7 @@
     "test:coverage": "npm run test:coverage --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "format": "npm run format --workspaces --if-present",
+    "format:check": "npm run format:check --workspaces --if-present",
     "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
     "dev:backend": "npm run dev -w @truco4ar/backend",
     "dev:frontend": "npm run dev -w @truco4ar/frontend",

@@ -2,7 +2,15 @@
  * Game setup and turn management for Argentine Truco
  */
 
-import { Player, Team, PlayerId, TeamId, PlayerPosition, createPlayer, createTeam } from '../types/player';
+import {
+  Player,
+  Team,
+  PlayerId,
+  TeamId,
+  PlayerPosition,
+  createPlayer,
+  createTeam
+} from '../types/player';
 
 /**
  * Configuration for setting up a game
@@ -47,9 +55,7 @@ export function setupGame(config: GameSetupConfig): GameSetup {
   }
 
   // Generate player names if not provided
-  const names = Array.from({ length: numPlayers }, (_, i) =>
-    playerNames[i] || `Player ${i + 1}`
-  );
+  const names = Array.from({ length: numPlayers }, (_, i) => playerNames[i] || `Player ${i + 1}`);
 
   // Create teams based on mode
   const teams: Team[] = [];

@@ -172,9 +172,7 @@ describe('Deck Management', () => {
     it('should throw error if deck does not have enough cards', () => {
       const smallDeck = [createCard(1, Suit.ESPADAS), createCard(2, Suit.ESPADAS)];
 
-      expect(() => dealCards(smallDeck, 2)).toThrow(
-        'Not enough cards in deck. Need 6, have 2'
-      );
+      expect(() => dealCards(smallDeck, 2)).toThrow('Not enough cards in deck. Need 6, have 2');
     });
 
     it('should throw error for invalid number of players (1 player)', () => {

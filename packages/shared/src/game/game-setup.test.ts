@@ -347,9 +347,7 @@ describe('Game Setup', () => {
     it('should throw error for non-existent position', () => {
       const setup = setupGame({ numPlayers: 2 });
 
-      expect(() => getPlayerAtPosition(setup.players, 2)).toThrow(
-        'No player found at position 2'
-      );
+      expect(() => getPlayerAtPosition(setup.players, 2)).toThrow('No player found at position 2');
     });
   });
 
@@ -482,9 +480,7 @@ describe('Game Setup', () => {
     it('should throw error for non-existent team', () => {
       const setup = setupGame({ numPlayers: 4 });
 
-      expect(() => getOpposingTeams(setup.teams, 'team-999')).toThrow(
-        'Team team-999 not found'
-      );
+      expect(() => getOpposingTeams(setup.teams, 'team-999')).toThrow('Team team-999 not found');
     });
   });
 

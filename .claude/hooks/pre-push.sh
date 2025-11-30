@@ -58,7 +58,54 @@ else
 fi
 
 # ========================================
-# 2. Run Linter
+# 2. Run Formatter Check
+# ========================================
+echo ""
+print_info "Checking code formatting..."
+
+FORMAT_PASSED=0
+
+# Check if format check command exists (varies by stack)
+if [ -f "package.json" ] && command -v npm > /dev/null; then
+    # Node.js project with Prettier
+    print_info "Running prettier check..."
+    if npm run format:check; then
+        FORMAT_PASSED=1
+    fi
+elif [ -f "pyproject.toml" ] && command -v black > /dev/null; then
+    # Python project with Black
+    print_info "Running black check..."
+    if black --check .; then
+        FORMAT_PASSED=1
+    fi
+elif [ -f "go.mod" ] && command -v gofmt > /dev/null; then
+    # Go project
+    print_info "Running gofmt check..."
+    if [ -z "$(gofmt -l .)" ]; then
+        FORMAT_PASSED=1
+    fi
+elif [ -f "Cargo.toml" ] && command -v cargo > /dev/null; then
+    # Rust project
+    print_info "Running cargo fmt check..."
+    if cargo fmt -- --check; then
+        FORMAT_PASSED=1
+    fi
+else
+    print_warning "No formatter detected"
+    print_info "Code formatting will be required once tech stack is chosen"
+    FORMAT_PASSED=1  # Don't block push if no formatter yet
+fi
+
+if [ $FORMAT_PASSED -eq 1 ]; then
+    print_success "Code formatting passed"
+else
+    print_error "Code formatting failed"
+    print_info "Run 'npm run format' to fix formatting issues"
+    CHECKS_FAILED=1
+fi
+
+# ========================================
+# 3. Run Linter
 # ========================================
 echo ""
 print_info "Running linter..."
@@ -105,7 +152,7 @@ else
 fi
 
 # ========================================
-# 3. Run Full Test Suite
+# 4. Run Full Test Suite
 # ========================================
 echo ""
 print_info "Running full test suite (unit + integration)..."
@@ -152,7 +199,7 @@ else
 fi
 
 # ========================================
-# 4. Check Test Coverage
+# 5. Check Test Coverage
 # ========================================
 echo ""
 print_info "Checking test coverage..."
@@ -179,7 +226,7 @@ else
 fi
 
 # ========================================
-# 5. Verify Commit Message Format
+# 6. Verify Commit Message Format
 # ========================================
 echo ""
 print_info "Verifying all commit messages follow Conventional Commits..."
@@ -210,7 +257,7 @@ else
 fi
 
 # ========================================
-# 6. Branch-Specific Checks
+# 7. Branch-Specific Checks
 # ========================================
 echo ""
 print_info "Running branch-specific checks..."
@@ -238,7 +285,7 @@ if [[ "$CURRENT_BRANCH" == "feature/"* ]]; then
 fi
 
 # ========================================
-# 7. Check for Large Files
+# 8. Check for Large Files
 # ========================================
 echo ""
 print_info "Checking for large files..."
@@ -263,7 +310,7 @@ if [ -n "$BINARY_FILES" ]; then
 fi
 
 # ========================================
-# 8. Verify No Uncommitted Changes
+# 9. Verify No Uncommitted Changes
 # ========================================
 echo ""
 print_info "Checking for uncommitted changes..."
@@ -276,7 +323,7 @@ else
 fi
 
 # ========================================
-# 9. Check Remote Status
+# 10. Check Remote Status
 # ========================================
 echo ""
 print_info "Checking remote status..."
