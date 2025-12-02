@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:showcase": "vite --open /showcase.html",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "preview:showcase": "vite preview --open /showcase.html",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

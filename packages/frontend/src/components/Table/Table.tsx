@@ -21,7 +21,7 @@ export function Table({ playedCards, maxPlayers = 4 }: TableProps) {
     <div className={`table table--${maxPlayers}-players`} role="region" aria-label="Played cards">
       <div className="table__center">
         {positions.map(position => {
-          const playedCard = playedCards.find((pc, index) => index === position);
+          const playedCard = playedCards.find((_pc, index) => index === position);
 
           return (
             <div key={position} className={`table__position table__position--${position}`}>

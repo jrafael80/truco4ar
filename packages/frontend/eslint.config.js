@@ -28,7 +28,8 @@ export default [
         navigator: 'readonly',
         localStorage: 'readonly',
         sessionStorage: 'readonly',
-        fetch: 'readonly'
+        fetch: 'readonly',
+        __dirname: 'readonly'
       }
     },
     plugins: {

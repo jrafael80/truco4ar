@@ -2,6 +2,7 @@
   "name": "@truco4ar/shared",
   "version": "0.1.0",
   "description": "Shared game logic and types for Truco4AR",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
