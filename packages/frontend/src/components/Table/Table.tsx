@@ -1,5 +1,5 @@
 import { Card as CardType } from '@truco4ar/shared';
-import { Card } from './Card';
+import { Card } from '../Card';
 import './Table.css';
 
 interface PlayedCard {
