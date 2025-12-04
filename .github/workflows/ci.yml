@@ -176,6 +176,9 @@ jobs:
       - name: Build shared package first
         run: npm run build -w @truco4ar/shared
 
+      - name: Build backend package
+        run: npm run build -w @truco4ar/backend
+
       - name: Build frontend package
         run: npm run build -w @truco4ar/frontend
 
