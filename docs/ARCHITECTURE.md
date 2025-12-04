@@ -637,6 +637,104 @@ GitHub → Actions → Run Tests
 - **Leaderboards**: Global and friend rankings
 - **Chat**: Optional in-game communication
 
+## Current Implementation (Phase 3: Backend)
+
+### Technology Stack
+
+The initial implementation uses:
+- **Runtime**: Node.js 18+ with TypeScript
+- **HTTP Server**: Express.js
+- **WebSocket**: Socket.io
+- **Package Manager**: npm workspaces (monorepo)
+- **Testing**: Jest with ts-jest
+
+### Backend Architecture
+
+#### Server Components
+
+```
+packages/backend/
+├── src/
+│   ├── server/
+│   │   ├── app.ts              # Express HTTP server setup
+│   │   ├── socket.ts           # Socket.io configuration
+│   │   └── socketHandlers.ts   # WebSocket event handlers
+│   ├── game/
+│   │   ├── RoomManager.ts      # Room lifecycle management
+│   │   └── types.ts            # Room and player type definitions
+│   ├── config/
+│   │   └── env.ts              # Environment configuration
+│   └── utils/
+│       └── roomCode.ts         # Room code generation
+```
+
+#### WebSocket Event Contracts
+
+**Client → Server Events**:
+```typescript
+createRoom: { playerName: string }
+joinRoom: { roomCode: string; playerName: string }
+leaveRoom: ()
+```
+
+**Server → Client Events**:
+```typescript
+roomCreated: { roomId: string; roomCode: string }
+roomJoined: { roomId: string; players: string[] }
+playerJoined: { playerId: string; playerName: string }
+playerLeft: { playerId: string }
+error: { message: string }
+```
+
+#### Room Management System
+
+**Room Lifecycle**:
+1. **Creation**: Generate unique 6-character code (excludes 0, O, I, 1 for readability)
+2. **Join**: Case-insensitive room code lookup
+3. **Play**: Real-time state synchronization via Socket.io rooms
+4. **Cleanup**: Automatic deletion when empty or inactive (30 min timeout)
+
+**Room Features**:
+- Unique room codes mapped to UUIDs
+- Configurable max players (default: 6)
+- Player connection tracking
+- Graceful disconnect handling
+- Periodic cleanup of inactive rooms
+
+#### Configuration
+
+Environment variables (see `.env.example`):
+```bash
+PORT=3001
+ALLOWED_ORIGINS=http://localhost:5173
+MAX_ROOMS=100
+MAX_PLAYERS_PER_ROOM=6
+ROOM_TIMEOUT_MINUTES=30
+```
+
+#### Test Coverage
+
+- **Unit Tests**: RoomManager, utilities (35 tests)
+- **Integration Tests**: Socket.io client/server flows (15 tests)
+- **Coverage**: 76.4% overall, exceeding 70% minimum
+  - RoomManager: 83.33%
+  - Socket handlers: 83.56%
+  - Utilities: 100%
+
+### Next Steps
+
+**Phase 3 Remaining**:
+- Game state synchronization
+- Card play event handlers
+- Betting event handlers
+- Round/hand progression logic
+
+**Phase 4: Frontend Integration**:
+- Socket.io client connection
+- Real-time UI updates
+- Room creation/join flows
+- Game interaction handlers
+
 ## Conclusion
 
 This architecture provides a solid foundation for Truco4AR that is:
@@ -645,4 +743,4 @@ This architecture provides a solid foundation for Truco4AR that is:
 - **Maintainable**: Clear boundaries and responsibilities
 - **Testable**: Each component can be tested independently
 
-The stack-agnostic approach ensures that technical decisions can be made based on actual requirements and constraints rather than premature optimization.
+The stack-agnostic approach ensures that technical decisions can be made based on actual requirements and constraints rather than premature optimization. The current TypeScript + Express + Socket.io implementation provides a pragmatic starting point with excellent developer experience and ecosystem support.
