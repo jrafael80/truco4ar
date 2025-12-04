@@ -163,9 +163,7 @@ describe('Score', () => {
     });
 
     it('displays both buenas and malas when both present', () => {
-      const teamsWithBoth = [
-        { teamId: 1, score: 15, buenas: 3, malas: 2 }
-      ];
+      const teamsWithBoth = [{ teamId: 1, score: 15, buenas: 3, malas: 2 }];
 
       render(<Score teams={teamsWithBoth} />);
       expect(screen.getByText('Buenas: 3')).toBeInTheDocument();
@@ -173,9 +171,7 @@ describe('Score', () => {
     });
 
     it('displays empty details section when buenas is 0 (still renders section)', () => {
-      const teamsWithZeroBuenas = [
-        { teamId: 1, score: 15, buenas: 0 }
-      ];
+      const teamsWithZeroBuenas = [{ teamId: 1, score: 15, buenas: 0 }];
 
       const { container } = render(<Score teams={teamsWithZeroBuenas} />);
       // The section renders but no content inside since buenas=0 doesn't show
@@ -310,7 +306,7 @@ describe('Score', () => {
       render(<Score teams={mockTeams} targetScore={30} />);
       const progressBars = screen.getAllByRole('progressbar');
 
-      progressBars.forEach((bar) => {
+      progressBars.forEach(bar => {
         expect(bar).toHaveAttribute('aria-valuenow');
         expect(bar).toHaveAttribute('aria-valuemin');
         expect(bar).toHaveAttribute('aria-valuemax');

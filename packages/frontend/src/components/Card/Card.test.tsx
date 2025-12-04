@@ -101,7 +101,9 @@ describe('Card', () => {
 
     it('calls onClick when face down card is clicked', () => {
       const handleClick = vi.fn();
-      const { container } = render(<Card card={mockCard} isFaceDown={true} onClick={handleClick} />);
+      const { container } = render(
+        <Card card={mockCard} isFaceDown={true} onClick={handleClick} />
+      );
 
       const cardElement = container.querySelector('.card');
       if (cardElement) {
@@ -146,8 +148,8 @@ describe('Card', () => {
       const suits = [Suit.ESPADAS, Suit.BASTOS, Suit.OROS, Suit.COPAS];
       const ranks: Rank[] = [1, 2, 3, 4, 5, 6, 7, 10, 11, 12];
 
-      suits.forEach((suit) => {
-        ranks.forEach((rank) => {
+      suits.forEach(suit => {
+        ranks.forEach(rank => {
           const { unmount } = render(<Card card={{ suit, rank }} />);
           expect(screen.getAllByText(rank.toString())[0]).toBeInTheDocument();
           unmount();

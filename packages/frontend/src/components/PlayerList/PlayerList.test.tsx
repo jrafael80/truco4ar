@@ -114,9 +114,7 @@ describe('PlayerList', () => {
     });
 
     it('applies active class to current turn player', () => {
-      const { container } = render(
-        <PlayerList players={mockPlayers} currentPlayerId="player2" />
-      );
+      const { container } = render(<PlayerList players={mockPlayers} currentPlayerId="player2" />);
 
       const playerItems = container.querySelectorAll('.player-item');
       expect(playerItems[0]).toBeDefined();
@@ -162,9 +160,7 @@ describe('PlayerList', () => {
     });
 
     it('applies current-user class to current user', () => {
-      const { container } = render(
-        <PlayerList players={mockPlayers} currentUserId="player1" />
-      );
+      const { container } = render(<PlayerList players={mockPlayers} currentUserId="player1" />);
 
       const playerItems = container.querySelectorAll('.player-item');
       expect(playerItems[0]).toBeDefined();
@@ -187,7 +183,9 @@ describe('PlayerList', () => {
 
   describe('Combined States', () => {
     it('shows both turn and current user indicators', () => {
-      render(<PlayerList players={mockPlayers} currentPlayerId="player1" currentUserId="player1" />);
+      render(
+        <PlayerList players={mockPlayers} currentPlayerId="player1" currentUserId="player1" />
+      );
       expect(screen.getByText('(Tú)')).toBeInTheDocument();
       expect(screen.getByLabelText('Current turn')).toBeInTheDocument();
     });
@@ -221,9 +219,7 @@ describe('PlayerList', () => {
     });
 
     it('handles very long names', () => {
-      const longName = [
-        { id: 'p1', name: 'Alexander Maximiliano Rodriguez Fernández', teamId: 1 }
-      ];
+      const longName = [{ id: 'p1', name: 'Alexander Maximiliano Rodriguez Fernández', teamId: 1 }];
 
       render(<PlayerList players={longName} />);
       expect(screen.getByText('Alexander Maximiliano Rodriguez Fernández')).toBeInTheDocument();
@@ -254,9 +250,7 @@ describe('PlayerList', () => {
     });
 
     it('applies active class only to current turn player', () => {
-      const { container } = render(
-        <PlayerList players={mockPlayers} currentPlayerId="player2" />
-      );
+      const { container } = render(<PlayerList players={mockPlayers} currentPlayerId="player2" />);
 
       const items = container.querySelectorAll('.player-item');
       expect(items[0]).toBeDefined();
@@ -291,9 +285,7 @@ describe('PlayerList', () => {
     });
 
     it('handles player with undefined optional properties', () => {
-      const minimalPlayer = [
-        { id: 'p1', name: 'Alice', teamId: 1 }
-      ];
+      const minimalPlayer = [{ id: 'p1', name: 'Alice', teamId: 1 }];
 
       render(<PlayerList players={minimalPlayer} />);
       expect(screen.getByText('Alice')).toBeInTheDocument();

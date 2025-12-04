@@ -110,7 +110,7 @@ describe('Hand', () => {
       const { container } = render(<Hand cards={mockCards} playableIndices={[]} />);
 
       const cards = container.querySelectorAll('.hand__card .card');
-      cards.forEach((card) => {
+      cards.forEach(card => {
         expect(card.className).not.toContain('card--playable');
       });
     });
@@ -119,7 +119,7 @@ describe('Hand', () => {
       const { container } = render(<Hand cards={mockCards} playableIndices={[0, 1, 2]} />);
 
       const cards = container.querySelectorAll('.hand__card .card');
-      cards.forEach((card) => {
+      cards.forEach(card => {
         expect(card.className).toContain('card--playable');
       });
     });
@@ -244,7 +244,7 @@ describe('Hand', () => {
       );
 
       const cards = container.querySelectorAll('.hand__card .card');
-      cards.forEach((card) => {
+      cards.forEach(card => {
         expect(card.className).toContain('card--face-down');
       });
     });
