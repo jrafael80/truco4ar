@@ -148,13 +148,18 @@ export function setupSocketHandlers(io: TypedServer, roomManager: RoomManager) {
     });
   });
 
-  // Setup periodic cleanup
-  setInterval(() => {
-    const cleaned = roomManager.cleanupInactiveRooms();
-    if (cleaned > 0) {
-      console.log(`Cleaned up ${cleaned} inactive rooms`);
-    }
-  }, 5 * 60 * 1000); // Every 5 minutes
+  // Setup periodic cleanup (only in production, not during tests)
+  if (process.env.NODE_ENV !== 'test') {
+    setInterval(
+      () => {
+        const cleaned = roomManager.cleanupInactiveRooms();
+        if (cleaned > 0) {
+          console.log(`Cleaned up ${cleaned} inactive rooms`);
+        }
+      },
+      5 * 60 * 1000
+    ); // Every 5 minutes
+  }
 }
 
 /**
