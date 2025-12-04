@@ -1,0 +1,152 @@
+.showcase {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 20px;
+}
+
+.showcase__header {
+  text-align: center;
+  color: white;
+  margin-bottom: 40px;
+}
+
+.showcase__header h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.showcase__header p {
+  font-size: 1.2em;
+  opacity: 0.9;
+}
+
+.showcase__content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.showcase__section {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.showcase__section h2 {
+  color: #2d3748;
+  margin-bottom: 10px;
+  font-size: 1.8em;
+  border-bottom: 3px solid #667eea;
+  padding-bottom: 10px;
+}
+
+.showcase__section p {
+  color: #718096;
+  margin-bottom: 20px;
+}
+
+.showcase__cards {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.showcase__card-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.showcase__card-demo span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.showcase__all-cards {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.showcase__info {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #667eea;
+  padding: 12px;
+  background: #edf2f7;
+  border-radius: 8px;
+}
+
+.showcase__section--row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.showcase__game-view {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+}
+
+.showcase__sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.showcase__game-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .showcase__section--row {
+    grid-template-columns: 1fr;
+  }
+
+  .showcase__game-view {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .showcase {
+    padding: 20px 10px;
+  }
+
+  .showcase__header h1 {
+    font-size: 2em;
+  }
+
+  .showcase__section {
+    padding: 20px;
+  }
+
+  .showcase__section h2 {
+    font-size: 1.4em;
+  }
+
+  .showcase__cards {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .showcase__header h1 {
+    font-size: 1.5em;
+  }
+
+  .showcase__section {
+    padding: 15px;
+  }
+}

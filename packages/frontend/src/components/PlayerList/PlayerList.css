@@ -1,0 +1,157 @@
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  min-width: 240px;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: white;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.player-item--active {
+  border-color: #4299e1;
+  background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.player-item--current-user {
+  background: linear-gradient(135deg, #fefcbf 0%, #faf089 100%);
+}
+
+.player-item--current-user.player-item--active {
+  background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+}
+
+.player-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.player-item__name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #2d3748;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.player-item__badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: #805ad5;
+  background: rgba(128, 90, 213, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.player-item__info {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: #718096;
+}
+
+.player-item__team {
+  font-weight: 500;
+}
+
+.player-item__dealer {
+  color: #dd6b20;
+  font-weight: 600;
+}
+
+.player-item__indicators {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.player-item__turn-indicator {
+  color: #4299e1;
+  font-size: 16px;
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+.player-item__played-indicator {
+  color: #48bb78;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(66, 153, 225, 0);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .player-list {
+    min-width: 200px;
+    padding: 12px;
+  }
+
+  .player-item {
+    padding: 10px;
+  }
+
+  .player-item__name {
+    font-size: 13px;
+  }
+
+  .player-item__info {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-list {
+    min-width: 100%;
+  }
+
+  .player-item {
+    padding: 8px;
+  }
+
+  .player-item__name {
+    font-size: 12px;
+  }
+
+  .player-item__badge {
+    font-size: 10px;
+  }
+
+  .player-item__info {
+    font-size: 10px;
+    gap: 6px;
+  }
+}
