@@ -500,12 +500,16 @@ The project uses **TypeScript + Node.js + React** for the initial implementation
 - **Database**: Redis (session state) + PostgreSQL (optional history)
 - **Testing**: Jest + Supertest
 
-**Frontend** (in development):
-- **Framework**: React 18+
-- **Build Tool**: Vite
-- **State Management**: TBD (Context API/Zustand/Redux)
-- **PWA**: Workbox for service workers
-- **Testing**: Jest + React Testing Library
+**Frontend**:
+- **Framework**: React 18+ with TypeScript
+- **Build Tool**: Vite 6 with multi-page setup (main app + showcase)
+- **Testing**: Vitest + React Testing Library + @testing-library/jest-dom
+- **UI Components**: Card, Hand, Table, PlayerList, Score
+- **Component Pattern**: Organized in folders with co-located styles and tests
+- **Styling**: CSS modules with Spanish card deck theming
+- **Development**: Hot module replacement with separate dev servers for app and showcase
+- **State Management**: TBD (Context API/Zustand/Redux) - pending backend integration
+- **PWA**: TBD - planned for future phases
 
 **Voice Recognition**:
 - **Client-side**: Web Speech API (for privacy and low latency)
