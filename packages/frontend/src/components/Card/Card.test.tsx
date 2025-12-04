@@ -22,7 +22,9 @@ describe('Card', () => {
 
       suits.forEach((suit, index) => {
         const { unmount } = render(<Card card={{ suit, rank: 1 as Rank }} />);
-        expect(screen.getByLabelText(suitNames[index])).toBeInTheDocument();
+        const suitName = suitNames[index];
+        expect(suitName).toBeDefined();
+        expect(screen.getByLabelText(suitName!)).toBeInTheDocument();
         unmount();
       });
     });
@@ -33,7 +35,10 @@ describe('Card', () => {
 
       ranks.forEach((rank, index) => {
         const { unmount } = render(<Card card={{ suit: Suit.ESPADAS, rank }} />);
-        expect(screen.getAllByText(rankDisplays[index])[0]).toBeInTheDocument();
+        const rankDisplay = rankDisplays[index];
+        expect(rankDisplay).toBeDefined();
+        const elements = screen.getAllByText(rankDisplay!);
+        expect(elements[0]).toBeInTheDocument();
         unmount();
       });
     });

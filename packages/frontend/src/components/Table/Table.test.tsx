@@ -79,12 +79,16 @@ describe('Table', () => {
       const firstPosition = positions[0];
       const secondPosition = positions[1];
 
-      expect(firstPosition.querySelector('.table__player-label')?.textContent).toBe('Alice');
-      expect(secondPosition.querySelector('.table__player-label')?.textContent).toBe('Bob');
+      expect(firstPosition).toBeDefined();
+      expect(secondPosition).toBeDefined();
+      expect(firstPosition!.querySelector('.table__player-label')?.textContent).toBe('Alice');
+      expect(secondPosition!.querySelector('.table__player-label')?.textContent).toBe('Bob');
     });
 
     it('shows placeholders for empty positions', () => {
-      const { container } = render(<Table playedCards={[mockPlayedCards[0]]} maxPlayers={4} />);
+      const firstCard = mockPlayedCards[0];
+      expect(firstCard).toBeDefined();
+      const { container } = render(<Table playedCards={[firstCard!]} maxPlayers={4} />);
 
       const placeholders = container.querySelectorAll('.table__placeholder');
       expect(placeholders).toHaveLength(3);
@@ -110,30 +114,40 @@ describe('Table', () => {
       const wrappers = container.querySelectorAll('.table__card-wrapper');
       expect(wrappers).toHaveLength(2);
 
-      expect(wrappers[0].querySelector('.table__player-label')).toBeInTheDocument();
-      expect(wrappers[1].querySelector('.table__player-label')).toBeInTheDocument();
+      expect(wrappers[0]).toBeDefined();
+      expect(wrappers[1]).toBeDefined();
+      expect(wrappers[0]!.querySelector('.table__player-label')).toBeInTheDocument();
+      expect(wrappers[1]!.querySelector('.table__player-label')).toBeInTheDocument();
     });
 
     it('renders card component inside wrapper', () => {
       const { container } = render(<Table playedCards={mockPlayedCards} />);
 
       const wrappers = container.querySelectorAll('.table__card-wrapper');
-      expect(wrappers[0].querySelector('.card')).toBeInTheDocument();
-      expect(wrappers[1].querySelector('.card')).toBeInTheDocument();
+      expect(wrappers[0]).toBeDefined();
+      expect(wrappers[1]).toBeDefined();
+      expect(wrappers[0]!.querySelector('.card')).toBeInTheDocument();
+      expect(wrappers[1]!.querySelector('.card')).toBeInTheDocument();
     });
   });
 
   describe('Edge Cases', () => {
     it('handles single played card', () => {
-      render(<Table playedCards={[mockPlayedCards[0]]} />);
+      const firstCard = mockPlayedCards[0];
+      expect(firstCard).toBeDefined();
+      render(<Table playedCards={[firstCard!]} />);
       expect(screen.getByText('Alice')).toBeInTheDocument();
       expect(screen.queryByText('Bob')).not.toBeInTheDocument();
     });
 
     it('handles maximum cards for player count', () => {
+      const card0 = mockPlayedCards[0];
+      const card1 = mockPlayedCards[1];
+      expect(card0).toBeDefined();
+      expect(card1).toBeDefined();
       const fourCards = [
-        mockPlayedCards[0],
-        mockPlayedCards[1],
+        card0!,
+        card1!,
         { card: { suit: Suit.OROS, rank: 12 as Rank }, playerId: 'p3', playerName: 'Charlie' },
         { card: { suit: Suit.COPAS, rank: 5 as Rank }, playerId: 'p4', playerName: 'Diana' }
       ];

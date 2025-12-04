@@ -119,8 +119,10 @@ describe('PlayerList', () => {
       );
 
       const playerItems = container.querySelectorAll('.player-item');
-      expect(playerItems[1].className).toContain('player-item--active');
-      expect(playerItems[0].className).not.toContain('player-item--active');
+      expect(playerItems[0]).toBeDefined();
+      expect(playerItems[1]).toBeDefined();
+      expect(playerItems[1]!.className).toContain('player-item--active');
+      expect(playerItems[0]!.className).not.toContain('player-item--active');
     });
 
     it('shows only one turn indicator at a time', () => {
@@ -165,8 +167,10 @@ describe('PlayerList', () => {
       );
 
       const playerItems = container.querySelectorAll('.player-item');
-      expect(playerItems[0].className).toContain('player-item--current-user');
-      expect(playerItems[1].className).not.toContain('player-item--current-user');
+      expect(playerItems[0]).toBeDefined();
+      expect(playerItems[1]).toBeDefined();
+      expect(playerItems[0]!.className).toContain('player-item--current-user');
+      expect(playerItems[1]!.className).not.toContain('player-item--current-user');
     });
 
     it('shows only one (Tú) badge', () => {
@@ -255,16 +259,22 @@ describe('PlayerList', () => {
       );
 
       const items = container.querySelectorAll('.player-item');
-      expect(items[1].className).toContain('player-item--active');
-      expect(items[0].className).not.toContain('player-item--active');
-      expect(items[2].className).not.toContain('player-item--active');
-      expect(items[3].className).not.toContain('player-item--active');
+      expect(items[0]).toBeDefined();
+      expect(items[1]).toBeDefined();
+      expect(items[2]).toBeDefined();
+      expect(items[3]).toBeDefined();
+      expect(items[1]!.className).toContain('player-item--active');
+      expect(items[0]!.className).not.toContain('player-item--active');
+      expect(items[2]!.className).not.toContain('player-item--active');
+      expect(items[3]!.className).not.toContain('player-item--active');
     });
   });
 
   describe('Edge Cases', () => {
     it('handles single player', () => {
-      render(<PlayerList players={[mockPlayers[0]]} />);
+      const firstPlayer = mockPlayers[0];
+      expect(firstPlayer).toBeDefined();
+      render(<PlayerList players={[firstPlayer!]} />);
       expect(screen.getByText('Alice')).toBeInTheDocument();
     });
 

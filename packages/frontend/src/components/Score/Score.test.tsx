@@ -102,8 +102,10 @@ describe('Score', () => {
       const { container } = render(<Score teams={mockTeams} />);
       const teamElements = container.querySelectorAll('.score__team');
 
-      expect(teamElements[0].className).toContain('score__team--winning');
-      expect(teamElements[1].className).not.toContain('score__team--winning');
+      expect(teamElements[0]).toBeDefined();
+      expect(teamElements[1]).toBeDefined();
+      expect(teamElements[0]!.className).toContain('score__team--winning');
+      expect(teamElements[1]!.className).not.toContain('score__team--winning');
     });
 
     it('applies winning class to both teams when tied', () => {
@@ -115,8 +117,10 @@ describe('Score', () => {
       const { container } = render(<Score teams={tiedTeams} />);
       const teamElements = container.querySelectorAll('.score__team');
 
-      expect(teamElements[0].className).toContain('score__team--winning');
-      expect(teamElements[1].className).toContain('score__team--winning');
+      expect(teamElements[0]).toBeDefined();
+      expect(teamElements[1]).toBeDefined();
+      expect(teamElements[0]!.className).toContain('score__team--winning');
+      expect(teamElements[1]!.className).toContain('score__team--winning');
     });
 
     it('handles single team correctly', () => {
@@ -204,9 +208,12 @@ describe('Score', () => {
       const { container } = render(<Score teams={multipleTeams} />);
       const teamElements = container.querySelectorAll('.score__team');
 
-      expect(teamElements[0].className).not.toContain('score__team--winning');
-      expect(teamElements[1].className).toContain('score__team--winning');
-      expect(teamElements[2].className).not.toContain('score__team--winning');
+      expect(teamElements[0]).toBeDefined();
+      expect(teamElements[1]).toBeDefined();
+      expect(teamElements[2]).toBeDefined();
+      expect(teamElements[0]!.className).not.toContain('score__team--winning');
+      expect(teamElements[1]!.className).toContain('score__team--winning');
+      expect(teamElements[2]!.className).not.toContain('score__team--winning');
     });
   });
 

@@ -48,7 +48,8 @@ describe('Hand', () => {
       render(<Hand cards={mockCards} onCardClick={handleClick} playableIndices={[0, 2]} />);
 
       const cards = screen.getAllByRole('button');
-      fireEvent.click(cards[0]);
+      expect(cards[0]).toBeDefined();
+      fireEvent.click(cards[0]!);
 
       expect(handleClick).toHaveBeenCalledTimes(1);
       expect(handleClick).toHaveBeenCalledWith(mockCards[0], 0);
@@ -59,7 +60,8 @@ describe('Hand', () => {
       render(<Hand cards={mockCards} onCardClick={handleClick} playableIndices={[0]} />);
 
       const cards = screen.getAllByRole('button');
-      fireEvent.click(cards[1]); // Click second card which is not playable
+      expect(cards[1]).toBeDefined();
+      fireEvent.click(cards[1]!); // Click second card which is not playable
 
       expect(handleClick).not.toHaveBeenCalled();
     });
@@ -69,8 +71,10 @@ describe('Hand', () => {
       render(<Hand cards={mockCards} onCardClick={handleClick} playableIndices={[0, 1, 2]} />);
 
       const cards = screen.getAllByRole('button');
-      fireEvent.click(cards[0]);
-      fireEvent.click(cards[2]);
+      expect(cards[0]).toBeDefined();
+      expect(cards[2]).toBeDefined();
+      fireEvent.click(cards[0]!);
+      fireEvent.click(cards[2]!);
 
       expect(handleClick).toHaveBeenCalledTimes(2);
       expect(handleClick).toHaveBeenNthCalledWith(1, mockCards[0], 0);
@@ -81,7 +85,8 @@ describe('Hand', () => {
       const { container } = render(<Hand cards={mockCards} playableIndices={[0, 1, 2]} />);
       const cards = container.querySelectorAll('.hand__card');
 
-      fireEvent.click(cards[0]);
+      expect(cards[0]).toBeDefined();
+      fireEvent.click(cards[0]!);
 
       // Should not throw error
       expect(cards).toHaveLength(3);
@@ -93,9 +98,12 @@ describe('Hand', () => {
       const { container } = render(<Hand cards={mockCards} playableIndices={[0, 2]} />);
 
       const cards = container.querySelectorAll('.hand__card .card');
-      expect(cards[0].className).toContain('card--playable');
-      expect(cards[1].className).not.toContain('card--playable');
-      expect(cards[2].className).toContain('card--playable');
+      expect(cards[0]).toBeDefined();
+      expect(cards[1]).toBeDefined();
+      expect(cards[2]).toBeDefined();
+      expect(cards[0]!.className).toContain('card--playable');
+      expect(cards[1]!.className).not.toContain('card--playable');
+      expect(cards[2]!.className).toContain('card--playable');
     });
 
     it('handles empty playableIndices array', () => {
@@ -122,18 +130,24 @@ describe('Hand', () => {
       const { container } = render(<Hand cards={mockCards} playedIndices={[1]} />);
 
       const cards = container.querySelectorAll('.hand__card .card');
-      expect(cards[0].className).not.toContain('card--played');
-      expect(cards[1].className).toContain('card--played');
-      expect(cards[2].className).not.toContain('card--played');
+      expect(cards[0]).toBeDefined();
+      expect(cards[1]).toBeDefined();
+      expect(cards[2]).toBeDefined();
+      expect(cards[0]!.className).not.toContain('card--played');
+      expect(cards[1]!.className).toContain('card--played');
+      expect(cards[2]!.className).not.toContain('card--played');
     });
 
     it('handles multiple played cards', () => {
       const { container } = render(<Hand cards={mockCards} playedIndices={[0, 2]} />);
 
       const cards = container.querySelectorAll('.hand__card .card');
-      expect(cards[0].className).toContain('card--played');
-      expect(cards[1].className).not.toContain('card--played');
-      expect(cards[2].className).toContain('card--played');
+      expect(cards[0]).toBeDefined();
+      expect(cards[1]).toBeDefined();
+      expect(cards[2]).toBeDefined();
+      expect(cards[0]!.className).toContain('card--played');
+      expect(cards[1]!.className).not.toContain('card--played');
+      expect(cards[2]!.className).toContain('card--played');
     });
 
     it('handles cards that are both playable and played', () => {
@@ -142,8 +156,9 @@ describe('Hand', () => {
       );
 
       const cards = container.querySelectorAll('.hand__card .card');
-      expect(cards[0].className).toContain('card--playable');
-      expect(cards[0].className).toContain('card--played');
+      expect(cards[0]).toBeDefined();
+      expect(cards[0]!.className).toContain('card--playable');
+      expect(cards[0]!.className).toContain('card--played');
     });
   });
 
@@ -152,9 +167,12 @@ describe('Hand', () => {
       const { container } = render(<Hand cards={mockCards} />);
       const cards = container.querySelectorAll('.hand__card');
 
-      expect(cards[0].querySelector('.card')).toBeInTheDocument();
-      expect(cards[1].querySelector('.card')).toBeInTheDocument();
-      expect(cards[2].querySelector('.card')).toBeInTheDocument();
+      expect(cards[0]).toBeDefined();
+      expect(cards[1]).toBeDefined();
+      expect(cards[2]).toBeDefined();
+      expect(cards[0]!.querySelector('.card')).toBeInTheDocument();
+      expect(cards[1]!.querySelector('.card')).toBeInTheDocument();
+      expect(cards[2]!.querySelector('.card')).toBeInTheDocument();
     });
 
     it('handles duplicate cards with different indices', () => {
@@ -172,7 +190,9 @@ describe('Hand', () => {
 
   describe('Edge Cases', () => {
     it('handles single card hand', () => {
-      render(<Hand cards={[mockCards[0]]} />);
+      const firstCard = mockCards[0];
+      expect(firstCard).toBeDefined();
+      render(<Hand cards={[firstCard!]} />);
       expect(screen.getAllByText('1')).toHaveLength(2); // Rank appears twice
     });
 
@@ -193,16 +213,20 @@ describe('Hand', () => {
       const { container } = render(<Hand cards={mockCards} playableIndices={[0, 10, 20]} />);
 
       const cards = container.querySelectorAll('.hand__card .card');
-      expect(cards[0].className).toContain('card--playable');
-      expect(cards[1].className).not.toContain('card--playable');
-      expect(cards[2].className).not.toContain('card--playable');
+      expect(cards[0]).toBeDefined();
+      expect(cards[1]).toBeDefined();
+      expect(cards[2]).toBeDefined();
+      expect(cards[0]!.className).toContain('card--playable');
+      expect(cards[1]!.className).not.toContain('card--playable');
+      expect(cards[2]!.className).not.toContain('card--playable');
     });
 
     it('handles negative playableIndices gracefully', () => {
       const { container } = render(<Hand cards={mockCards} playableIndices={[-1, 0]} />);
 
       const cards = container.querySelectorAll('.hand__card .card');
-      expect(cards[0].className).toContain('card--playable');
+      expect(cards[0]).toBeDefined();
+      expect(cards[0]!.className).toContain('card--playable');
     });
   });
 
