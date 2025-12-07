@@ -231,17 +231,16 @@ describe('Socket Handlers Integration', () => {
     });
 
     it('should delete room when last player leaves', done => {
-      clientSocket.on('roomJoined', () => {
-        clientSocket.emit('leaveRoom');
+      // Emit leaveRoom immediately (room already created in beforeEach)
+      clientSocket.emit('leaveRoom');
 
-        // Give time for cleanup
-        setTimeout(() => {
-          const room = roomManager.getRoomByCode(roomCode);
-          expect(room).toBeUndefined();
-          done();
-        }, 100);
-      });
-    }, 10000); // 10 second timeout for CI
+      // Give time for cleanup
+      setTimeout(() => {
+        const room = roomManager.getRoomByCode(roomCode);
+        expect(room).toBeUndefined();
+        done();
+      }, 100);
+    });
   });
 
   describe('Multiple Players', () => {
