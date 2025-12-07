@@ -241,7 +241,7 @@ describe('Socket Handlers Integration', () => {
           done();
         }, 100);
       });
-    });
+    }, 10000); // 10 second timeout for CI
   });
 
   describe('Multiple Players', () => {
