@@ -248,7 +248,8 @@ describe('Socket Handlers Integration', () => {
     it('should handle 4 players in a room', done => {
       const clients: ClientSocket[] = [];
       let roomCode: string;
-      let playerJoinedEvents = 0;
+      let joinedCount = 0;
+      const totalPlayers = 4;
 
       // First player creates room
       clientSocket = Client(`http://localhost:${port}`);
@@ -258,28 +259,38 @@ describe('Socket Handlers Integration', () => {
 
       clientSocket.on('roomCreated', ({ roomCode: code }) => {
         roomCode = code;
+        joinedCount++; // Count the creator
 
-        // Add 3 more players after room is created
+        // Add 3 more players sequentially for better reliability
         setTimeout(() => {
-          for (let i = 2; i <= 4; i++) {
+          for (let i = 2; i <= totalPlayers; i++) {
             const client = Client(`http://localhost:${port}`);
             clients.push(client);
+
             client.on('connect', () => {
               client.emit('joinRoom', { roomCode, playerName: `Player${i}` });
             });
+
+            client.on('roomJoined', ({ players }) => {
+              joinedCount++;
+              // Verify that the room has the expected number of players
+              if (joinedCount === totalPlayers) {
+                expect(players.length).toBe(totalPlayers);
+                expect(joinedCount).toBe(totalPlayers);
+                clients.forEach(c => c.disconnect());
+                done();
+              }
+            });
+
+            client.on('error', ({ message }) => {
+              done(new Error(`Client ${i} error: ${message}`));
+            });
           }
-        }, 100);
+        }, 200); // Slightly longer delay for CI
       });
 
-      // First player listens for other players joining
-      clientSocket.on('playerJoined', () => {
-        playerJoinedEvents++;
-        if (playerJoinedEvents === 3) {
-          // All 3 other players have joined
-          expect(playerJoinedEvents).toBe(3);
-          clients.forEach(c => c.disconnect());
-          done();
-        }
+      clientSocket.on('error', ({ message }) => {
+        done(new Error(`Creator error: ${message}`));
       });
     }, 15000);
   });
