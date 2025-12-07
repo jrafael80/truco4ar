@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
-import { createServer, Server as HTTPServer } from 'http';
+import { Server as HTTPServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { io as Client, Socket as ClientSocket } from 'socket.io-client';
 import { createApp } from './app';
